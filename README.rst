@@ -54,6 +54,10 @@ Or install install R from the official `R Project <https://www.r-project.org/>`_
 Usage
 -----
 
+Similarly to normal task functions which execute Python code, you also define tasks to
+execute scripts written in R with Python functions. The difference is that the function
+body does not contain any logic, but the decorators tell pytask how to handle the task.
+
 Here is an example where you want to run ``script.r``.
 
 .. code-block:: python
@@ -78,6 +82,10 @@ dependencies it may look like this
     @pytask.mark.produces("out.rds")
     def task_run_r_script():
         pass
+
+If you are wondering why the function body is empty, know that pytask-r replaces the
+body with an predefined internal function. See the section on implementation details for
+more information.
 
 
 Command Line Arguments
@@ -133,6 +141,8 @@ include the R decorator in the parametrization just like with
         pass
 
 
+.. _implementation_details:
+
 Implementation Details
 ----------------------
 
@@ -146,6 +156,10 @@ The plugin is only a convenient wrapper around
 
 to which you can always resort to when the plugin does not deliver functionality you
 need.
+
+It is not possible to enter a post-mortem debugger when an error happens in the R script
+or enter the debugger when starting the script. If there exists a solution for that,
+hints as well as contributions are highly appreciated.
 
 
 Changes
