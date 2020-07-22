@@ -17,6 +17,7 @@ dependencies:
   - r-base
 
   # Misc
+  - bumpversion
   - jupyterlab
   - pdbpp
   - pre-commit
