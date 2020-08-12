@@ -1,13 +1,32 @@
 import copy
 import functools
 import subprocess
+from typing import Iterable
+from typing import Optional
+from typing import Union
 
-import pytask
-from pytask.mark import get_markers_from_task
-from pytask.mark import has_marker
-from pytask.nodes import PythonFunctionTask
-from pytask.parametrize import _copy_func
-from pytask.shared import to_list
+from _pytask.config import hookimpl
+from _pytask.mark import get_specific_markers_from_task
+from _pytask.mark import has_marker
+from _pytask.nodes import PythonFunctionTask
+from _pytask.parametrize import _copy_func
+from _pytask.shared import to_list
+
+
+def r(options: Optional[Union[str, Iterable[str]]] = None):
+    """Specify command line options for Rscript.
+
+    Parameters
+    ----------
+    options : Optional[Union[str, Iterable[str]]]
+        One or multiple command line options passed to Rscript.
+
+    """
+    if options is None:
+        options = ["--vanilla"]
+    elif isinstance(options, str):
+        options = [options]
+    return options
 
 
 def run_r_script(depends_on, r):
@@ -15,7 +34,7 @@ def run_r_script(depends_on, r):
     subprocess.run(["Rscript", script.as_posix(), *r])
 
 
-@pytask.hookimpl
+@hookimpl
 def pytask_collect_task(session, path, name, obj):
     """Collect a task which is a function.
 
@@ -29,7 +48,7 @@ def pytask_collect_task(session, path, name, obj):
             path, name, obj, session
         )
         r_function = _copy_func(run_r_script)
-        r_function.pytestmark = copy.deepcopy(task.function.pytestmark)
+        r_function.pytaskmark = copy.deepcopy(task.function.pytaskmark)
 
         args = _create_command_line_arguments(task)
         r_function = functools.partial(r_function, r=args)
@@ -46,10 +65,11 @@ def pytask_collect_task(session, path, name, obj):
 
 
 def _create_command_line_arguments(task):
-    args = get_markers_from_task(task, "r")[0].args
-    if args:
-        out = list(args)
-    else:
-        out = ["--vanilla"]
+    r_marks = get_specific_markers_from_task(task, "r")
+    mark = r_marks[0]
+    for mark_ in r_marks[1:]:
+        mark = mark.combine_with(mark_)
 
-    return out
+    options = r(*mark.args, **mark.kwargs)
+
+    return options

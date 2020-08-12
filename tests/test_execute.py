@@ -4,10 +4,10 @@ from contextlib import ExitStack as does_not_raise  # noqa: N813
 from pathlib import Path
 
 import pytest
+from _pytask.mark import Mark
+from _pytask.nodes import FilePathNode
 from conftest import needs_rscript
-from pytask.main import main
-from pytask.mark import Mark
-from pytask.nodes import FilePathNode
+from pytask import main
 from pytask_r.execute import pytask_execute_task_setup
 
 

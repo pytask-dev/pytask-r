@@ -3,7 +3,7 @@ import textwrap
 
 import pytest
 from conftest import needs_rscript
-from pytask.main import main
+from pytask import main
 
 
 @needs_rscript

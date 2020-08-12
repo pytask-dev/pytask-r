@@ -4,7 +4,7 @@ channels:
   - r
   - pytask
 dependencies:
-  - python=3.7
+  - python
   - pip
 
   # Conda
@@ -13,7 +13,7 @@ dependencies:
   - conda-verify
 
   # Package dependencies
-  - pytask >= 0.0.4
+  - pytask >= 0.0.5
   - r-base
 
   # Misc
