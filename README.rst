@@ -26,7 +26,7 @@ Installation
 
 Install the plugin with
 
-.. code-block:: bash
+.. code-block:: console
 
     $ conda config --add channels conda-forge --add channels pytask
     $ conda install pytask-r
@@ -34,7 +34,7 @@ Install the plugin with
 You also need to have R installed and ``Rscript`` on your command line. To test
 whether it is installed, type the following on the command line
 
-.. code-block:: bash
+.. code-block:: console
 
     $ Rscript --help
 
@@ -43,7 +43,7 @@ choosing either the normal R or Microsoft R Open (MRO). The command is one of th
 following commands. (See `here <https://docs.anaconda.com/anaconda/user-guide/tasks/
 using-r-language>`_  for further explanation on Anaconda, R, and MRO.)
 
-.. code-block:: bash
+.. code-block:: console
 
     $ conda install -c r r-base     # For normal R.
     $ conda install -c r mro-base   # For MRO.
