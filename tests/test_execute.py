@@ -2,7 +2,6 @@ import os
 import textwrap
 from contextlib import ExitStack as does_not_raise  # noqa: N813
 from pathlib import Path
-from subprocess import CalledProcessError
 
 import pytest
 from _pytask.mark import Mark
@@ -140,6 +139,7 @@ def test_raise_error_if_rscript_is_not_found(tmp_path, monkeypatch):
 @needs_rscript
 @pytest.mark.end_to_end
 def test_run_r_script_w_saving_workspace(tmp_path):
+    """Save workspace while executing the script."""
     task_source = """
     import pytask
 
@@ -169,6 +169,7 @@ def test_run_r_script_w_saving_workspace(tmp_path):
 @needs_rscript
 @pytest.mark.end_to_end
 def test_run_r_script_w_wrong_cmd_option(tmp_path):
+    """Apparently, Rscript simply discards wrong cmd options."""
     task_source = """
     import pytask
 
@@ -191,5 +192,4 @@ def test_run_r_script_w_wrong_cmd_option(tmp_path):
     os.chdir(tmp_path)
     session = main({"paths": tmp_path})
 
-    assert session.exit_code == 1
-    assert isinstance(session.execution_reports[0].exc_info[1], CalledProcessError)
+    assert session.exit_code == 0
