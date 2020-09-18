@@ -9,7 +9,8 @@ class DummyTask:
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    "args, expected", [((), ["--vanilla"]), (("--no-environ",), ["--no-environ"])],
+    "args, expected",
+    [((), ["--vanilla"]), (("--no-environ",), ["--no-environ"])],
 )
 def test_create_command_line_arguments(args, expected):
     task = DummyTask()

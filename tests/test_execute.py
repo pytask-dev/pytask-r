@@ -2,6 +2,7 @@ import os
 import textwrap
 from contextlib import ExitStack as does_not_raise  # noqa: N813
 from pathlib import Path
+from subprocess import CalledProcessError
 
 import pytest
 from _pytask.mark import Mark
@@ -19,7 +20,10 @@ class DummyTask:
 @pytest.mark.parametrize(
     "depends_on, expectation",
     [
-        ([FilePathNode("a", Path("a.r"))], does_not_raise(),),
+        (
+            [FilePathNode("a", Path("a.r"))],
+            does_not_raise(),
+        ),
         (
             [FilePathNode("a", Path("a.txt")), FilePathNode("b", Path("b.r"))],
             pytest.raises(ValueError),
@@ -160,3 +164,32 @@ def test_run_r_script_w_saving_workspace(tmp_path):
 
     assert session.exit_code == 0
     assert tmp_path.joinpath("out.txt").exists()
+
+
+@needs_rscript
+@pytest.mark.end_to_end
+def test_run_r_script_w_wrong_cmd_option(tmp_path):
+    task_source = """
+    import pytask
+
+    @pytask.mark.r("--wrong-flag")
+    @pytask.mark.depends_on("script.r")
+    @pytask.mark.produces("out.txt")
+    def task_run_r_script():
+        pass
+
+    """
+    tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
+
+    r_script = """
+    file_descr <- file("out.txt")
+    writeLines(c("Birds flying high you know how I feel."), file_descr)
+    close(file_descr)
+    """
+    tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
+
+    os.chdir(tmp_path)
+    session = main({"paths": tmp_path})
+
+    assert session.exit_code == 1
+    assert isinstance(session.execution_reports[0].exc_info[1], CalledProcessError)

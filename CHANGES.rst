@@ -10,6 +10,7 @@ all releases are available on `Anaconda.org <https://anaconda.org/pytask/pytask-
 ------------------
 
 :gh:`2` fixes marker description and adds some changes to the readme.
+:gh:`3` check for exit code equal to 0.
 
 
 0.0.2 - 2020-08-14

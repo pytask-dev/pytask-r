@@ -1,3 +1,4 @@
+"""Collect tasks."""
 import copy
 import functools
 import subprocess
@@ -30,8 +31,9 @@ def r(options: Optional[Union[str, Iterable[str]]] = None):
 
 
 def run_r_script(depends_on, r):
+    """Run an R script."""
     script = to_list(depends_on)[0]
-    subprocess.run(["Rscript", script.as_posix(), *r])
+    subprocess.run(["Rscript", script.as_posix(), *r], check=True)
 
 
 @hookimpl
@@ -65,6 +67,11 @@ def pytask_collect_task(session, path, name, obj):
 
 
 def _create_command_line_arguments(task):
+    """Create command line arguments.
+
+    Combine all arguments passed to all r markers.
+
+    """
     r_marks = get_specific_markers_from_task(task, "r")
     mark = r_marks[0]
     for mark_ in r_marks[1:]:
