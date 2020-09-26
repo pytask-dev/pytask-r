@@ -5,7 +5,7 @@
     :target: https://anaconda.org/pytask/pytask-r
 
 .. image:: https://github.com/pytask-dev/pytask-r/workflows/Continuous%20Integration%20Workflow/badge.svg?branch=main
-    :target: https://github.com/pytask-dev/pytask/actions?query=branch%3Amain
+    :target: https://github.com/pytask-dev/pytask-r/actions?query=branch%3Amain
 
 .. image:: https://codecov.io/gh/pytask-dev/pytask-r/branch/main/graph/badge.svg
     :target: https://codecov.io/gh/pytask-dev/pytask-r
@@ -72,13 +72,13 @@ Here is an example where you want to run ``script.r``.
         pass
 
 Note that, you need to apply the ``@pytask.mark.r`` marker so that pytask-r handles the
-task. The first dependency is always treated as the executable script. With multiple
-dependencies it may look like this
+task. The executable script must be the first dependency. Other dependencies can be
+added after that.
 
 .. code-block:: python
 
     @pytask.mark.r
-    @pytask.mark.depends_on("script.r", "input.rds")
+    @pytask.mark.depends_on(["script.r", "input.rds"])
     @pytask.mark.produces("out.rds")
     def task_run_r_script():
         pass
@@ -91,8 +91,8 @@ more information.
 Command Line Arguments
 ~~~~~~~~~~~~~~~~~~~~~~
 
-The decorator can be used to pass command line arguments to ``Rscript`` which is by
-default the only the ``--vanilla`` flag. If you want to pass arguments to the script via
+The decorator can be used to pass command line arguments to ``Rscript`` which is, by
+default, only the ``--vanilla`` flag. If you want to pass arguments to the script via
 the command line, use
 
 .. code-block:: python
@@ -152,7 +152,7 @@ The plugin is only a convenient wrapper around
 
     import subprocess
 
-    subprocess.run(["Rscript", "--vanilla", "script.r"])
+    subprocess.run(["Rscript", "--vanilla", "script.r"], check=True)
 
 to which you can always resort to when the plugin does not deliver functionality you
 need.
