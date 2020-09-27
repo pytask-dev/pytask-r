@@ -1,11 +1,9 @@
 import os
 import textwrap
 from contextlib import ExitStack as does_not_raise  # noqa: N813
-from pathlib import Path
 
 import pytest
 from _pytask.mark import Mark
-from _pytask.nodes import FilePathNode
 from conftest import needs_rscript
 from pytask import main
 from pytask_r.execute import pytask_execute_task_setup
@@ -17,24 +15,18 @@ class DummyTask:
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    "depends_on, expectation",
+    "found_r, expectation",
     [
-        (
-            [FilePathNode("a", Path("a.r"))],
-            does_not_raise(),
-        ),
-        (
-            [FilePathNode("a", Path("a.txt")), FilePathNode("b", Path("b.r"))],
-            pytest.raises(ValueError),
-        ),
+        (True, does_not_raise()),
+        (None, pytest.raises(RuntimeError)),
     ],
 )
-def test_pytask_execute_task_setup_dependency(monkeypatch, depends_on, expectation):
-    # Act like latexmk is installed since we do not test this.
-    monkeypatch.setattr("pytask_r.execute.shutil.which", lambda x: True)
+def test_pytask_execute_task_setup(monkeypatch, found_r, expectation):
+    """Make sure that the task setup raises errors."""
+    # Act like r is installed since we do not test this.
+    monkeypatch.setattr("pytask_r.execute.shutil.which", lambda x: found_r)
 
     task = DummyTask()
-    task.depends_on = depends_on
     task.markers = [Mark("r", (), {})]
 
     with expectation:
