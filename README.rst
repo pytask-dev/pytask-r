@@ -18,7 +18,7 @@
 pytask-r
 ========
 
-pytask-r allows you to run R scripts with pytask.
+Run R scripts with pytask.
 
 
 Installation
@@ -31,17 +31,17 @@ Install the plugin with
     $ conda config --add channels conda-forge --add channels pytask
     $ conda install pytask-r
 
-You also need to have R installed and ``Rscript`` on your command line. To test
-whether it is installed, type the following on the command line
+You also need to have R installed and ``Rscript`` on your command line. Test it by
+typing the following on the command line
 
 .. code-block:: console
 
     $ Rscript --help
 
 If an error is shown instead of a help page, you can install R with ``conda`` by
-choosing either the normal R or Microsoft R Open (MRO). The command is one of the two
-following commands. (See `here <https://docs.anaconda.com/anaconda/user-guide/tasks/
-using-r-language>`_  for further explanation on Anaconda, R, and MRO.)
+choosing either R or Microsoft R Open (MRO). Choose one of the two following commands.
+(See `here <https://docs.anaconda.com/anaconda/user-guide/tasks/ using-r-language>`_
+for further explanation on Anaconda, R, and MRO.)
 
 .. code-block:: console
 
@@ -54,9 +54,9 @@ Or install install R from the official `R Project <https://www.r-project.org/>`_
 Usage
 -----
 
-Similarly to normal task functions which execute Python code, you also define tasks to
+Similarly to normal task functions which execute Python code, you define tasks to
 execute scripts written in R with Python functions. The difference is that the function
-body does not contain any logic, but the decorators tell pytask how to handle the task.
+body does not contain any logic, but the decorator tells pytask how to handle the task.
 
 Here is an example where you want to run ``script.r``.
 
@@ -84,7 +84,7 @@ added after that.
         pass
 
 If you are wondering why the function body is empty, know that pytask-r replaces the
-body with an predefined internal function. See the section on implementation details for
+body with a predefined internal function. See the section on implementation details for
 more information.
 
 
@@ -115,7 +115,7 @@ Parametrization
 ~~~~~~~~~~~~~~~
 
 You can also parametrize the execution of scripts, meaning executing multiple R scripts
-as well as passing different command line arguments to an R script.
+as well as passing different command line arguments to the same R script.
 
 The following task executes two R scripts which produce different outputs.
 
@@ -130,23 +130,24 @@ The following task executes two R scripts which produce different outputs.
 
 
 If you want to pass different command line arguments to the same R script, you have to
-include the R decorator in the parametrization just like with
+include the ``@pytask.mark.r`` decorator in the parametrization just like with
 ``@pytask.mark.depends_on`` and ``@pytask.mark.produces``.
 
 .. code-block:: python
 
     @pytask.mark.depends_on("script.r")
-    @pytask.mark.parametrize("produces, r", [("out_1.rds", 1), ("out_2.rds", 2)])
+    @pytask.mark.parametrize(
+        "produces, r",
+        [("output_1.rds", ["--vanilla", 1]), ("output_2.rds", ["--vanilla", 2])],
+    )
     def task_execute_r_script():
         pass
 
 
-.. _implementation_details:
-
 Implementation Details
 ----------------------
 
-The plugin is only a convenient wrapper around
+The plugin is a convenient wrapper around
 
 .. code-block:: python
 
