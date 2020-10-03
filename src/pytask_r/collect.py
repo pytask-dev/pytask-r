@@ -59,14 +59,18 @@ def pytask_collect_task(session, path, name, obj):
 
         task.function = r_function
 
+        return task
+
+
+@hookimpl
+def pytask_collect_task_teardown(task):
+    if task is not None:
         if isinstance(task.depends_on[0], FilePathNode) and task.depends_on[
             0
         ].value.suffix not in [".r", ".R"]:
             raise ValueError(
                 "The first dependency of an R task must be the executable script."
             )
-
-        return task
 
 
 def _merge_all_markers(task):
