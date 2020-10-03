@@ -20,7 +20,7 @@ requirements:
 
   run:
     - python >=3.6
-    - pytask >=0.0.5
+    - pytask >=0.0.7
 
 test:
   requires:
@@ -32,11 +32,13 @@ test:
   commands:
     - pytask --version
     - pytask --help
+    - pytask markers
+    - pytask clean
 
     - pytest tests
 
 about:
   home: https://github.com/pytask-dev/pytask-r
   license: none
-  summary: Compile LaTeX documents.
+  summary: Run R scripts with pytask.
   dev_url: https://github.com/pytask-dev/pytask-r/
