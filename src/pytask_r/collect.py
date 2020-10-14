@@ -64,7 +64,12 @@ def pytask_collect_task(session, path, name, obj):
 
 @hookimpl
 def pytask_collect_task_teardown(task):
-    if task is not None:
+    """Perform some checks.
+
+    Remove is task is none check with pytask 0.0.9.
+
+    """
+    if task is not None and get_specific_markers_from_task(task, "r"):
         if isinstance(task.depends_on[0], FilePathNode) and task.depends_on[
             0
         ].value.suffix not in [".r", ".R"]:

@@ -6,6 +6,12 @@ chronological order. Releases follow `semantic versioning <https://semver.org/>`
 all releases are available on `Anaconda.org <https://anaconda.org/pytask/pytask-r>`_.
 
 
+0.0.4 - 2020-10-14
+------------------
+
+- :gh:`4` fixes ``pytask_collect_task_teardown`` with non-R tasks and releases 0.0.4.
+
+
 0.0.3 - 2020-10-04
 ------------------
 
