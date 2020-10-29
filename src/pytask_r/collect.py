@@ -2,6 +2,7 @@
 import copy
 import functools
 import subprocess
+from pathlib import Path
 from typing import Iterable
 from typing import Optional
 from typing import Union
@@ -12,7 +13,6 @@ from _pytask.mark import has_marker
 from _pytask.nodes import FilePathNode
 from _pytask.nodes import PythonFunctionTask
 from _pytask.parametrize import _copy_func
-from _pytask.shared import to_list
 
 
 def r(options: Optional[Union[str, Iterable[str]]] = None):
@@ -31,9 +31,9 @@ def r(options: Optional[Union[str, Iterable[str]]] = None):
     return options
 
 
-def run_r_script(depends_on, r):
+def run_r_script(depends_on, r, r_source_key):
     """Run an R script."""
-    script = to_list(depends_on)[0]
+    script = _get_node_from_dictionary(depends_on, r_source_key)
     subprocess.run(["Rscript", script.as_posix(), *r], check=True)
 
 
@@ -55,7 +55,9 @@ def pytask_collect_task(session, path, name, obj):
 
         merged_marks = _merge_all_markers(task)
         args = r(*merged_marks.args, **merged_marks.kwargs)
-        r_function = functools.partial(r_function, r=args)
+        r_function = functools.partial(
+            r_function, r=args, r_source_key=session.config["r_source_key"]
+        )
 
         task.function = r_function
 
@@ -64,18 +66,21 @@ def pytask_collect_task(session, path, name, obj):
 
 @hookimpl
 def pytask_collect_task_teardown(task):
-    """Perform some checks.
-
-    Remove is task is none check with pytask 0.0.9.
-
-    """
-    if task is not None and get_specific_markers_from_task(task, "r"):
-        if isinstance(task.depends_on[0], FilePathNode) and task.depends_on[
-            0
-        ].value.suffix not in [".r", ".R"]:
+    """Perform some checks."""
+    if get_specific_markers_from_task(task, "r"):
+        source = _get_node_from_dictionary(task.depends_on, "source")
+        if isinstance(source, FilePathNode) and source.value.suffix not in [".r", ".R"]:
             raise ValueError(
                 "The first dependency of an R task must be the executable script."
             )
+
+
+def _get_node_from_dictionary(obj, key, fallback=0):
+    if isinstance(obj, Path):
+        pass
+    elif isinstance(obj, dict):
+        obj = obj.get(key) or obj.get(fallback)
+    return obj
 
 
 def _merge_all_markers(task):

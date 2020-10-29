@@ -6,6 +6,12 @@ chronological order. Releases follow `semantic versioning <https://semver.org/>`
 all releases are available on `Anaconda.org <https://anaconda.org/pytask/pytask-r>`_.
 
 
+0.0.5 - 2020-10-30
+------------------
+
+- :gh:`5` makes pytask-r work with pytask v0.0.9.
+
+
 0.0.4 - 2020-10-14
 ------------------
 

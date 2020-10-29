@@ -1,4 +1,3 @@
-import itertools
 import os
 import textwrap
 from contextlib import ExitStack as does_not_raise  # noqa: N813
@@ -12,36 +11,6 @@ from pytask_r.execute import pytask_execute_task_setup
 
 class DummyTask:
     pass
-
-
-@pytest.mark.end_to_end
-@pytest.mark.parametrize(
-    "dependencies, products",
-    itertools.product(
-        ([], ["in.txt"], ["in_1.txt", "in_2.txt"]),
-        (["out.txt"], ["out_1.txt", "out_2.txt"]),
-    ),
-)
-def test_normal_flow_w_varying_dependencies_products(tmp_path, dependencies, products):
-    source = f"""
-    import pytask
-    from pathlib import Path
-
-
-    @pytask.mark.depends_on({dependencies})
-    @pytask.mark.produces({products})
-    def task_dummy(depends_on, produces):
-        if not isinstance(produces, list):
-            produces = [produces]
-        for product in produces:
-            product.touch()
-    """
-    tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(source))
-    for dependency in dependencies:
-        tmp_path.joinpath(dependency).touch()
-
-    session = main({"paths": tmp_path})
-    assert session.exit_code == 0
 
 
 @pytest.mark.unit
@@ -66,12 +35,16 @@ def test_pytask_execute_task_setup(monkeypatch, found_r, expectation):
 
 @needs_rscript
 @pytest.mark.end_to_end
-def test_run_r_script(tmp_path):
-    task_source = """
+@pytest.mark.parametrize(
+    "depends_on",
+    ["'script.r'", {"source": "script.r"}, {0: "script.r"}, {"script": "script.r"}],
+)
+def test_run_r_script(tmp_path, depends_on):
+    task_source = f"""
     import pytask
 
     @pytask.mark.r
-    @pytask.mark.depends_on("script.r")
+    @pytask.mark.depends_on({depends_on})
     @pytask.mark.produces("out.txt")
     def task_run_r_script():
         pass
@@ -85,6 +58,13 @@ def test_run_r_script(tmp_path):
     close(file_descriptor)
     """
     tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
+
+    if (
+        isinstance(depends_on, dict)
+        and "source" not in depends_on
+        and 0 not in depends_on
+    ):
+        tmp_path.joinpath("pytask.ini").write_text("[pytask]\nr_source_key = script")
 
     os.chdir(tmp_path)
     session = main({"paths": tmp_path})
