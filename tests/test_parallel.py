@@ -23,6 +23,11 @@ pytestmark = pytest.mark.skipif(
 @needs_rscript
 @pytest.mark.end_to_end
 def test_parallel_parametrization_over_source_files(runner, tmp_path):
+    """Test parallelization over source files.
+
+    Same as in README.rst.
+
+    """
     os.chdir(tmp_path)
 
     source = """
@@ -38,13 +43,13 @@ def test_parallel_parametrization_over_source_files(runner, tmp_path):
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(source))
 
     r_script = """
-    Sys.sleep(2)
+    Sys.sleep(1.5)
     saveRDS(1, file=paste0(1, ".rds"))
     """
     tmp_path.joinpath("script_1.r").write_text(textwrap.dedent(r_script))
 
     r_script = """
-    Sys.sleep(2)
+    Sys.sleep(1.5)
     saveRDS(2, file=paste0(2, ".rds"))
     """
     tmp_path.joinpath("script_2.r").write_text(textwrap.dedent(r_script))
@@ -68,6 +73,11 @@ def test_parallel_parametrization_over_source_files(runner, tmp_path):
 @needs_rscript
 @pytest.mark.end_to_end
 def test_parallel_parametrization_over_source_file(runner, tmp_path):
+    """Test parallelization over the same source file.
+
+    Same as in README.rst.
+
+    """
     os.chdir(tmp_path)
 
     source = """
@@ -87,7 +97,7 @@ def test_parallel_parametrization_over_source_file(runner, tmp_path):
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(source))
 
     r_script = """
-    Sys.sleep(2)
+    Sys.sleep(1.5)
     args <- commandArgs(trailingOnly=TRUE)
     number <- args[2]
     saveRDS(number, file=paste0("output_", number, ".rds"))

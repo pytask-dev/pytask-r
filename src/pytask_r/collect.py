@@ -31,10 +31,9 @@ def r(options: Optional[Union[str, Iterable[str]]] = None):
     return options
 
 
-def run_r_script(depends_on, r, r_source_key):
+def run_r_script(r):
     """Run an R script."""
-    script = _get_node_from_dictionary(depends_on, r_source_key)
-    subprocess.run(["Rscript", script.as_posix(), *r], check=True)
+    subprocess.run(r, check=True)
 
 
 @hookimpl
@@ -50,22 +49,12 @@ def pytask_collect_task(session, path, name, obj):
         task = PythonFunctionTask.from_path_name_function_session(
             path, name, obj, session
         )
-        r_function = _copy_func(run_r_script)
-        r_function.pytaskmark = copy.deepcopy(task.function.pytaskmark)
-
-        merged_marks = _merge_all_markers(task)
-        args = r(*merged_marks.args, **merged_marks.kwargs)
-        r_function = functools.partial(
-            r_function, r=args, r_source_key=session.config["r_source_key"]
-        )
-
-        task.function = r_function
 
         return task
 
 
 @hookimpl
-def pytask_collect_task_teardown(task):
+def pytask_collect_task_teardown(session, task):
     """Perform some checks."""
     if get_specific_markers_from_task(task, "r"):
         source = _get_node_from_dictionary(task.depends_on, "source")
@@ -73,6 +62,16 @@ def pytask_collect_task_teardown(task):
             raise ValueError(
                 "The first dependency of an R task must be the executable script."
             )
+
+        r_function = _copy_func(run_r_script)
+        r_function.pytaskmark = copy.deepcopy(task.function.pytaskmark)
+
+        merged_marks = _merge_all_markers(task)
+        args = r(*merged_marks.args, **merged_marks.kwargs)
+        options = _prepare_cmd_options(session, task, args)
+        r_function = functools.partial(r_function, r=options)
+
+        task.function = r_function
 
 
 def _get_node_from_dictionary(obj, key, fallback=0):
@@ -90,3 +89,14 @@ def _merge_all_markers(task):
     for mark_ in r_marks[1:]:
         mark = mark.combined_with(mark_)
     return mark
+
+
+def _prepare_cmd_options(session, task, args):
+    """Prepare the command line arguments to execute the do-file.
+
+    The last entry changes the name of the log file. We take the task id as a name which
+    is unique and does not cause any errors when parallelizing the execution.
+
+    """
+    source = _get_node_from_dictionary(task.depends_on, session.config["r_source_key"])
+    return ["Rscript", source.value.as_posix(), *args]

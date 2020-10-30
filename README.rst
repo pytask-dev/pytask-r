@@ -173,7 +173,10 @@ include the ``@pytask.mark.r`` decorator in the parametrization just like with
     @pytask.mark.depends_on("script.r")
     @pytask.mark.parametrize(
         "produces, r",
-        [("output_1.rds", ["--vanilla", 1]), ("output_2.rds", ["--vanilla", 2])],
+        [
+            ("output_1.rds", (["--vanilla", "1"],)),
+            ("output_2.rds", (["--vanilla", "2"],)),
+        ],
     )
     def task_execute_r_script():
         pass
