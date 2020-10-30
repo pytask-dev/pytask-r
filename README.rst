@@ -72,8 +72,18 @@ Here is an example where you want to run ``script.r``.
         pass
 
 Note that, you need to apply the ``@pytask.mark.r`` marker so that pytask-r handles the
-task. The executable script must be the first dependency. Other dependencies can be
-added after that.
+task.
+
+If you are wondering why the function body is empty, know that pytask-r replaces the
+body with a predefined internal function. See the section on implementation details for
+more information.
+
+
+Multiple dependencies and products
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+What happens if a task has more dependencies? Using a list, the R script which should be
+executed must be found in the first position of the list.
 
 .. code-block:: python
 
@@ -83,9 +93,31 @@ added after that.
     def task_run_r_script():
         pass
 
-If you are wondering why the function body is empty, know that pytask-r replaces the
-body with a predefined internal function. See the section on implementation details for
-more information.
+If you use a dictionary to pass dependencies to the task, pytask-r will, first, look
+for a ``"source"`` key in the dictionary and, secondly, under the key ``0``.
+
+.. code-block:: python
+
+    @pytask.mark.depends_on({"source": "script.r", "input": "input.rds"})
+    def task_run_r_script():
+        pass
+
+
+    # or
+
+
+    @pytask.mark.depends_on({0: "script.r", "input": "input.rds"})
+    def task_run_r_script():
+        pass
+
+
+    # or two decorators for the function, if you do not assign a name to the input.
+
+
+    @pytask.mark.depends_on({"source": "script.r"})
+    @pytask.mark.depends_on("input.rds")
+    def task_run_r_script():
+        pass
 
 
 Command Line Arguments
@@ -138,10 +170,24 @@ include the ``@pytask.mark.r`` decorator in the parametrization just like with
     @pytask.mark.depends_on("script.r")
     @pytask.mark.parametrize(
         "produces, r",
-        [("output_1.rds", ["--vanilla", 1]), ("output_2.rds", ["--vanilla", 2])],
+        [
+            ("output_1.rds", (["--vanilla", "1"],)),
+            ("output_2.rds", (["--vanilla", "2"],)),
+        ],
     )
     def task_execute_r_script():
         pass
+
+
+Configuration
+-------------
+
+If you want to change the name of the key which identifies the R script, change the
+following default configuration in your pytask configuration file.
+
+.. code-block:: ini
+
+    r_source_key = source
 
 
 Implementation Details

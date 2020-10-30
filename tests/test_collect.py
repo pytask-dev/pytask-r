@@ -4,7 +4,9 @@ from pathlib import Path
 import pytest
 from _pytask.mark import Mark
 from _pytask.nodes import FilePathNode
+from pytask_r.collect import _get_node_from_dictionary
 from pytask_r.collect import _merge_all_markers
+from pytask_r.collect import _prepare_cmd_options
 from pytask_r.collect import pytask_collect_task
 from pytask_r.collect import pytask_collect_task_teardown
 from pytask_r.collect import r
@@ -82,12 +84,61 @@ def test_pytask_collect_task(name, expected):
         (["input.rds", "script.R"], ["any_out.rds"], pytest.raises(ValueError)),
     ],
 )
-def test_pytask_collect_task_teardown(depends_on, produces, expectation):
+@pytest.mark.parametrize("r_source_key", ["source", "script"])
+def test_pytask_collect_task_teardown(depends_on, produces, expectation, r_source_key):
+    session = DummyClass()
+    session.config = {"r_source_key": r_source_key}
+
     task = DummyClass()
-    task.depends_on = [FilePathNode(n.split(".")[0], Path(n)) for n in depends_on]
-    task.produces = [FilePathNode(n.split(".")[0], Path(n)) for n in produces]
+    task.depends_on = {
+        i: FilePathNode(n.split(".")[0], Path(n)) for i, n in enumerate(depends_on)
+    }
+    task.produces = {
+        i: FilePathNode(n.split(".")[0], Path(n)) for i, n in enumerate(produces)
+    }
     task.markers = [Mark("r", (), {})]
     task.function = task_dummy
+    task.function.pytaskmark = task.markers
 
     with expectation:
-        pytask_collect_task_teardown(task)
+        pytask_collect_task_teardown(session, task)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "obj, key, expected",
+    [
+        (1, "asds", 1),
+        (1, None, 1),
+        ({"a": 1}, "a", 1),
+        ({0: 1}, "a", 1),
+    ],
+)
+def test_get_node_from_dictionary(obj, key, expected):
+    result = _get_node_from_dictionary(obj, key)
+    assert result == expected
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "args",
+    [
+        [],
+        ["a"],
+        ["a", "b"],
+    ],
+)
+@pytest.mark.parametrize("r_source_key", ["source", "script"])
+def test_prepare_cmd_options(args, r_source_key):
+    session = DummyClass()
+    session.config = {"r_source_key": r_source_key}
+
+    node = DummyClass()
+    node.value = Path("script.r")
+    task = DummyClass()
+    task.depends_on = {r_source_key: node}
+    task.name = "task"
+
+    result = _prepare_cmd_options(session, task, args)
+
+    assert result == ["Rscript", "script.r", *args]

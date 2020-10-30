@@ -20,11 +20,12 @@ requirements:
 
   run:
     - python >=3.6
-    - pytask >=0.0.7
+    - pytask >=0.0.9
 
 test:
   requires:
     - pytest
+    - pytask-parallel >=0.0.4
     - r-base
   source_files:
     - tox.ini
@@ -34,6 +35,7 @@ test:
     - pytask --help
     - pytask markers
     - pytask clean
+    - pytask collect
 
     - pytest tests
 

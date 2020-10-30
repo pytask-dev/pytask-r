@@ -2,6 +2,7 @@
 import copy
 import functools
 import subprocess
+from pathlib import Path
 from typing import Iterable
 from typing import Optional
 from typing import Union
@@ -12,7 +13,6 @@ from _pytask.mark import has_marker
 from _pytask.nodes import FilePathNode
 from _pytask.nodes import PythonFunctionTask
 from _pytask.parametrize import _copy_func
-from _pytask.shared import to_list
 
 
 def r(options: Optional[Union[str, Iterable[str]]] = None):
@@ -31,10 +31,9 @@ def r(options: Optional[Union[str, Iterable[str]]] = None):
     return options
 
 
-def run_r_script(depends_on, r):
+def run_r_script(r):
     """Run an R script."""
-    script = to_list(depends_on)[0]
-    subprocess.run(["Rscript", script.as_posix(), *r], check=True)
+    subprocess.run(r, check=True)
 
 
 @hookimpl
@@ -50,32 +49,37 @@ def pytask_collect_task(session, path, name, obj):
         task = PythonFunctionTask.from_path_name_function_session(
             path, name, obj, session
         )
-        r_function = _copy_func(run_r_script)
-        r_function.pytaskmark = copy.deepcopy(task.function.pytaskmark)
-
-        merged_marks = _merge_all_markers(task)
-        args = r(*merged_marks.args, **merged_marks.kwargs)
-        r_function = functools.partial(r_function, r=args)
-
-        task.function = r_function
 
         return task
 
 
 @hookimpl
-def pytask_collect_task_teardown(task):
-    """Perform some checks.
-
-    Remove is task is none check with pytask 0.0.9.
-
-    """
-    if task is not None and get_specific_markers_from_task(task, "r"):
-        if isinstance(task.depends_on[0], FilePathNode) and task.depends_on[
-            0
-        ].value.suffix not in [".r", ".R"]:
+def pytask_collect_task_teardown(session, task):
+    """Perform some checks."""
+    if get_specific_markers_from_task(task, "r"):
+        source = _get_node_from_dictionary(task.depends_on, "source")
+        if isinstance(source, FilePathNode) and source.value.suffix not in [".r", ".R"]:
             raise ValueError(
                 "The first dependency of an R task must be the executable script."
             )
+
+        r_function = _copy_func(run_r_script)
+        r_function.pytaskmark = copy.deepcopy(task.function.pytaskmark)
+
+        merged_marks = _merge_all_markers(task)
+        args = r(*merged_marks.args, **merged_marks.kwargs)
+        options = _prepare_cmd_options(session, task, args)
+        r_function = functools.partial(r_function, r=options)
+
+        task.function = r_function
+
+
+def _get_node_from_dictionary(obj, key, fallback=0):
+    if isinstance(obj, Path):
+        pass
+    elif isinstance(obj, dict):
+        obj = obj.get(key) or obj.get(fallback)
+    return obj
 
 
 def _merge_all_markers(task):
@@ -85,3 +89,14 @@ def _merge_all_markers(task):
     for mark_ in r_marks[1:]:
         mark = mark.combined_with(mark_)
     return mark
+
+
+def _prepare_cmd_options(session, task, args):
+    """Prepare the command line arguments to execute the do-file.
+
+    The last entry changes the name of the log file. We take the task id as a name which
+    is unique and does not cause any errors when parallelizing the execution.
+
+    """
+    source = _get_node_from_dictionary(task.depends_on, session.config["r_source_key"])
+    return ["Rscript", source.value.as_posix(), *args]
