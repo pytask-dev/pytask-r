@@ -119,9 +119,6 @@ for a ``"source"`` key in the dictionary and, secondly, under the key ``0``.
     def task_run_r_script():
         pass
 
-The same applies to the compiled document which is either in the first position, under
-the key ``"document"`` or ``0``.
-
 
 Command Line Arguments
 ~~~~~~~~~~~~~~~~~~~~~~

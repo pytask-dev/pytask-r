@@ -98,6 +98,7 @@ def test_pytask_collect_task_teardown(depends_on, produces, expectation, r_sourc
     }
     task.markers = [Mark("r", (), {})]
     task.function = task_dummy
+    task.function.pytaskmark = task.markers
 
     with expectation:
         pytask_collect_task_teardown(session, task)
