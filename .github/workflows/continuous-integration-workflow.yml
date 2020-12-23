@@ -11,7 +11,7 @@ jobs:
 
   run-tests:
 
-    name: Run tests for ${{ matrix.os }} on ${{ matrix.python-version }}
+    name: Run tests for ${{ matrix.os }} on ${{ matrix.python-version }} and ${{ matrix.r-version }}
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -19,13 +19,14 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
         python-version: ['3.6', '3.7', '3.8']
+        r-version: ['3.6.3']
 
     steps:
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-r@v1
         with:
-          r-version: '3.6.1' # The R version to download (if necessary) and use.
-      - uses: goanpeca/setup-miniconda@v1
+          r-version: ${{ matrix.r-version }}
+      - uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
@@ -41,7 +42,7 @@ jobs:
         run: tox -e pytest -- -m "unit or (not integration and not end_to_end)" --cov=./ --cov-report=xml -n auto
 
       - name: Upload coverage report for unit tests and doctests.
-        if: runner.os == 'Linux' && matrix.python-version == '3.8'
+        if: runner.os == 'Linux' && matrix.python-version == '3.8' && matrix.r-version == '3.6.3'
         shell: bash -l {0}
         run: bash <(curl -s https://codecov.io/bash) -F unit -c
 
@@ -50,7 +51,7 @@ jobs:
       #   run: tox -e pytest -- -m integration --cov=./ --cov-report=xml -n auto
 
       # - name: Upload coverage reports of integration tests.
-      #   if: runner.os == 'Linux' && matrix.python-version == '3.8'
+      #   if: runner.os == 'Linux' && matrix.python-version == '3.8' && matrix.r-version == '3.6.3'
       #   shell: bash -l {0}
       #   run: bash <(curl -s https://codecov.io/bash) -F integration -c
 
@@ -59,31 +60,11 @@ jobs:
         run: tox -e pytest -- -m end_to_end --cov=./ --cov-report=xml -n auto
 
       - name: Upload coverage reports of end-to-end tests.
-        if: runner.os == 'Linux' && matrix.python-version == '3.8'
+        if: runner.os == 'Linux' && matrix.python-version == '3.8' && matrix.r-version == '3.6.3'
         shell: bash -l {0}
         run: bash <(curl -s https://codecov.io/bash) -F end_to_end -c
 
       - name: Validate codecov.yml
-        if: runner.os == 'Linux' && matrix.python-version == '3.8'
+        if: runner.os == 'Linux' && matrix.python-version == '3.8' && matrix.r-version == '3.6.3'
         shell: bash -l {0}
         run: cat codecov.yml | curl --data-binary @- https://codecov.io/validate
-
-
-  pre-commit:
-
-    name: Run pre-commit.
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.8
-
-      - name: Install dependencies
-        run: pip install tox
-
-      - name: Run pre-commit
-        run: tox -e pre-commit
