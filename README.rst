@@ -98,6 +98,7 @@ for a ``"source"`` key in the dictionary and, secondly, under the key ``0``.
 
 .. code-block:: python
 
+    @pytask.mark.r
     @pytask.mark.depends_on({"source": "script.r", "input": "input.rds"})
     def task_run_r_script():
         pass
@@ -106,6 +107,7 @@ for a ``"source"`` key in the dictionary and, secondly, under the key ``0``.
     # or
 
 
+    @pytask.mark.r
     @pytask.mark.depends_on({0: "script.r", "input": "input.rds"})
     def task_run_r_script():
         pass
@@ -114,6 +116,7 @@ for a ``"source"`` key in the dictionary and, secondly, under the key ``0``.
     # or two decorators for the function, if you do not assign a name to the input.
 
 
+    @pytask.mark.r
     @pytask.mark.depends_on({"source": "script.r"})
     @pytask.mark.depends_on("input.rds")
     def task_run_r_script():
@@ -153,13 +156,23 @@ The following task executes two R scripts which produce different outputs.
 
 .. code-block:: python
 
+    from src.config import BLD, SRC
+
+
     @pytask.mark.r
     @pytask.mark.parametrize(
-        "depends_on, produces", [("script_1.r", "1.rds"), ("script_2.r", "2.rds")]
+        "depends_on, produces",
+        [(SRC / "script_1.r", BLD / "1.rds"), (SRC / "script_2.r", BLD / "2.rds")],
     )
     def task_execute_r_script():
         pass
 
+And the R script includes something like
+
+.. code-block:: r
+
+    args <- commandArgs(trailingOnly=TRUE)
+    produces <- args[1]  # holds the path
 
 If you want to pass different command line arguments to the same R script, you have to
 include the ``@pytask.mark.r`` decorator in the parametrization just like with

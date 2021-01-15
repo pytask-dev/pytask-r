@@ -5,6 +5,7 @@ import subprocess
 from pathlib import Path
 from typing import Iterable
 from typing import Optional
+from typing import Sequence
 from typing import Union
 
 from _pytask.config import hookimpl
@@ -26,13 +27,14 @@ def r(options: Optional[Union[str, Iterable[str]]] = None):
     """
     if options is None:
         options = ["--vanilla"]
-    elif isinstance(options, str):
-        options = [options]
+    options = _to_list(options)
+    options = [str(i) for i in options]
     return options
 
 
 def run_r_script(r):
     """Run an R script."""
+    print("pytask-r executes " + " ".join(r) + ".")  # noqa: T001
     subprocess.run(r, check=True)
 
 
@@ -99,4 +101,30 @@ def _prepare_cmd_options(session, task, args):
 
     """
     source = _get_node_from_dictionary(task.depends_on, session.config["r_source_key"])
-    return ["Rscript", source.value.as_posix(), *args]
+    return ["Rscript", source.path.as_posix(), *args]
+
+
+def _to_list(scalar_or_iter):
+    """Convert scalars and iterables to list.
+
+    Parameters
+    ----------
+    scalar_or_iter : str or list
+
+    Returns
+    -------
+    list
+
+    Examples
+    --------
+    >>> _to_list("a")
+    ['a']
+    >>> _to_list(["b"])
+    ['b']
+
+    """
+    return (
+        [scalar_or_iter]
+        if isinstance(scalar_or_iter, str) or not isinstance(scalar_or_iter, Sequence)
+        else list(scalar_or_iter)
+    )
