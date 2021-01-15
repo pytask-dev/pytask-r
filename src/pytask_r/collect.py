@@ -2,7 +2,6 @@
 import copy
 import functools
 import subprocess
-from pathlib import Path
 from typing import Iterable
 from typing import Optional
 from typing import Sequence
@@ -77,9 +76,8 @@ def pytask_collect_task_teardown(session, task):
 
 
 def _get_node_from_dictionary(obj, key, fallback=0):
-    if isinstance(obj, Path):
-        pass
-    elif isinstance(obj, dict):
+    """Get node from dictionary."""
+    if isinstance(obj, dict):
         obj = obj.get(key) or obj.get(fallback)
     return obj
 
