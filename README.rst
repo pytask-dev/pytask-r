@@ -126,13 +126,12 @@ for a ``"source"`` key in the dictionary and, secondly, under the key ``0``.
 Command Line Arguments
 ~~~~~~~~~~~~~~~~~~~~~~
 
-The decorator can be used to pass command line arguments to ``Rscript`` which is, by
-default, only the ``--vanilla`` flag. If you want to pass arguments to the script via
-the command line, use
+The decorator can be used to pass command line arguments to ``Rscript``. See the
+following example.
 
 .. code-block:: python
 
-    @pytask.mark.r(["--vanilla", "value"])
+    @pytask.mark.r("value")
     @pytask.mark.depends_on("script.r")
     @pytask.mark.produces("out.rds")
     def task_run_r_script():
@@ -143,7 +142,7 @@ And in your ``script.r``, you can intercept the value with
 .. code-block:: r
 
     args <- commandArgs(trailingOnly=TRUE)
-    arg <- args[1]  # ``arg`` holds ``"value"``
+    arg <- args[1]  # holds ``"value"``
 
 
 Parametrization
@@ -183,10 +182,7 @@ include the ``@pytask.mark.r`` decorator in the parametrization just like with
     @pytask.mark.depends_on("script.r")
     @pytask.mark.parametrize(
         "produces, r",
-        [
-            ("output_1.rds", (["--vanilla", "1"],)),
-            ("output_2.rds", (["--vanilla", "2"],)),
-        ],
+        [(BLD / "output_1.rds", "1"), (BLD / "output_2.rds", "2")],
     )
     def task_execute_r_script():
         pass
@@ -212,7 +208,7 @@ The plugin is a convenient wrapper around
 
     import subprocess
 
-    subprocess.run(["Rscript", "--vanilla", "script.r"], check=True)
+    subprocess.run(["Rscript", "script.r"], check=True)
 
 to which you can always resort to when the plugin does not deliver functionality you
 need.

@@ -26,7 +26,7 @@ def r(options: Optional[Union[str, Iterable[str]]] = None):
 
     """
     if options is None:
-        options = ["--vanilla"]
+        options = []
     options = _to_list(options)
     options = [str(i) for i in options]
     return options

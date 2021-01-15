@@ -24,7 +24,7 @@ def task_dummy():
 @pytest.mark.parametrize(
     "r_args, expected",
     [
-        (None, ["--vanilla"]),
+        (None, []),
         ("--some-option", ["--some-option"]),
         (["--a", "--b"], ["--a", "--b"]),
     ],
