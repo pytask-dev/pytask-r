@@ -43,12 +43,17 @@ def test_parametrized_execution_of_r_script(tmp_path):
 
 @needs_rscript
 @pytest.mark.end_to_end
-def test_parametrize_r_options(tmp_path):
+def test_parametrize_r_options_and_product_paths(tmp_path):
     task_source = """
     import pytask
+    from pathlib import Path
+
+    SRC = Path(__file__).parent
 
     @pytask.mark.depends_on("script.r")
-    @pytask.mark.parametrize("produces, r", [("0.rds", "0"), ("1.rds", "1")])
+    @pytask.mark.parametrize("produces, r", [
+        (SRC / "0.rds", (0, SRC / "0.rds")), (SRC / "1.rds", (1, SRC / "1.rds"))
+    ])
     def task_execute_r_script():
         pass
     """
@@ -57,7 +62,8 @@ def test_parametrize_r_options(tmp_path):
     r_script = """
     args <- commandArgs(trailingOnly=TRUE)
     number <- args[1]
-    saveRDS(number, file=paste0(number, ".rds"))
+    produces <- args[2]
+    saveRDS(number, file=produces)
     """
     tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
 

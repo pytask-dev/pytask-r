@@ -24,7 +24,7 @@ def task_dummy():
 @pytest.mark.parametrize(
     "r_args, expected",
     [
-        (None, ["--vanilla"]),
+        (None, []),
         ("--some-option", ["--some-option"]),
         (["--a", "--b"], ["--a", "--b"]),
     ],
@@ -132,7 +132,7 @@ def test_prepare_cmd_options(args, r_source_key):
     session.config = {"r_source_key": r_source_key}
 
     node = DummyClass()
-    node.value = Path("script.r")
+    node.path = Path("script.r")
     task = DummyClass()
     task.depends_on = {r_source_key: node}
     task.name = "task"

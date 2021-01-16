@@ -8,4 +8,4 @@ def pytask_parametrize_kwarg_to_marker(obj, kwargs):
     """Attach parametrized r arguments to the function with a marker."""
     if callable(obj):
         if "r" in kwargs:
-            mark.r(*kwargs.pop("r"))(obj)
+            mark.r(kwargs.pop("r"))(obj)

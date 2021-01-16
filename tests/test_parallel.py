@@ -82,15 +82,14 @@ def test_parallel_parametrization_over_source_file(runner, tmp_path):
 
     source = """
     import pytask
+    from pathlib import Path
+
+    SRC = Path(__file__).parent
 
     @pytask.mark.depends_on("script.r")
-    @pytask.mark.parametrize(
-        "produces, r",
-        [
-            ("output_1.rds", (["--vanilla", "1"],)),
-            ("output_2.rds", (["--vanilla", "2"],)),
-        ],
-    )
+    @pytask.mark.parametrize("produces, r", [
+        (SRC / "0.rds", (1, SRC / "0.rds")), (SRC / "1.rds", (1, SRC / "1.rds"))
+    ])
     def task_execute_r_script():
         pass
     """
@@ -99,8 +98,9 @@ def test_parallel_parametrization_over_source_file(runner, tmp_path):
     r_script = """
     Sys.sleep(2)
     args <- commandArgs(trailingOnly=TRUE)
-    number <- args[2]
-    saveRDS(number, file=paste0("output_", number, ".rds"))
+    number <- args[1]
+    produces <- args[2]
+    saveRDS(number, file=produces)
     """
     tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
 
@@ -109,7 +109,7 @@ def test_parallel_parametrization_over_source_file(runner, tmp_path):
     assert result.exit_code == 0
     duration_normal = time.time() - start
 
-    for name in ["output_1.rds", "output_2.rds"]:
+    for name in ["0.rds", "1.rds"]:
         tmp_path.joinpath(name).unlink()
 
     start = time.time()
