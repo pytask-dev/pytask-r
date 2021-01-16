@@ -24,16 +24,14 @@ def r(options: Optional[Union[str, Iterable[str]]] = None):
         One or multiple command line options passed to Rscript.
 
     """
-    if options is None:
-        options = []
-    options = _to_list(options)
+    options = [] if options is None else _to_list(options)
     options = [str(i) for i in options]
     return options
 
 
 def run_r_script(r):
     """Run an R script."""
-    print("pytask-r executes " + " ".join(r) + ".")  # noqa: T001
+    print("Executing " + " ".join(r) + ".")  # noqa: T001
     subprocess.run(r, check=True)
 
 
