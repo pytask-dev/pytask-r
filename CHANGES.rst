@@ -6,7 +6,7 @@ chronological order. Releases follow `semantic versioning <https://semver.org/>`
 all releases are available on `Anaconda.org <https://anaconda.org/pytask/pytask-r>`_.
 
 
-0.0.6 - 2021-xx-xx
+0.0.6 - 2021-01-16
 ------------------
 
 - :gh:`7` converts command line arguments automatically to string and removes the
