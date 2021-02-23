@@ -5,17 +5,19 @@ package:
   version: {{ data.get('version') }}
 
 source:
-  # git_url is nice in that it won't capture devenv stuff.  However, it only captures
+  # git_url is nice in that it won't capture devenv stuff. However, it only captures
   # committed code, so pay attention.
   git_url: ../
 
 build:
   noarch: python
   number: 0
+  script: {{ PYTHON }} setup.py install --single-version-externally-managed --record record.txt
 
 requirements:
   host:
     - python
+    - pip
     - setuptools
 
   run:
@@ -41,6 +43,7 @@ test:
 
 about:
   home: https://github.com/pytask-dev/pytask-r
-  license: none
+  license: MIT
+  license_file: LICENSE
   summary: Run R scripts with pytask.
-  dev_url: https://github.com/pytask-dev/pytask-r/
+  dev_url: https://github.com/pytask-dev/pytask-r
