@@ -25,6 +25,8 @@ setup(
     long_description_content_type="text/x-rst",
     author="Tobias Raabe",
     author_email="raabe@posteo.de",
+    url=PROJECT_URLS["Github"],
+    project_urls=PROJECT_URLS,
     python_requires=">=3.6",
     license="MIT",
     classifiers=[
