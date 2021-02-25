@@ -24,3 +24,4 @@ dependencies:
   - pre-commit
   - pytest-cov
   - pytest-xdist
+  - versioneer

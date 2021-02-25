@@ -3,7 +3,14 @@ Changes
 
 This is a record of all past pytask-r releases and what went into them in reverse
 chronological order. Releases follow `semantic versioning <https://semver.org/>`_ and
-all releases are available on `Anaconda.org <https://anaconda.org/pytask/pytask-r>`_.
+all releases are available on `PyPI <https://pypi.org/project/pytask-r>`_ and
+`Anaconda.org <https://anaconda.org/pytask/pytask-r>`_.
+
+
+0.0.7 - 2021-02-25
+------------------
+
+- :gh:`9` publishes pytask-r on PyPI, adds versioneer, and more.
 
 
 0.0.6 - 2021-01-16

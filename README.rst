@@ -1,14 +1,29 @@
+.. image:: https://img.shields.io/pypi/v/pytask-r?color=blue
+    :alt: PyPI
+    :target: https://pypi.org/project/pytask-r
+
+.. image:: https://img.shields.io/pypi/pyversions/pytask-r
+    :alt: PyPI - Python Version
+    :target: https://pypi.org/project/pytask-r
+
 .. image:: https://anaconda.org/pytask/pytask-r/badges/version.svg
     :target: https://anaconda.org/pytask/pytask-r
 
 .. image:: https://anaconda.org/pytask/pytask-r/badges/platforms.svg
     :target: https://anaconda.org/pytask/pytask-r
 
+.. image:: https://img.shields.io/pypi/l/pytask-r
+    :alt: PyPI - License
+
 .. image:: https://github.com/pytask-dev/pytask-r/workflows/Continuous%20Integration%20Workflow/badge.svg?branch=main
     :target: https://github.com/pytask-dev/pytask-r/actions?query=branch%3Amain
 
 .. image:: https://codecov.io/gh/pytask-dev/pytask-r/branch/main/graph/badge.svg
     :target: https://codecov.io/gh/pytask-dev/pytask-r
+
+.. image:: https://results.pre-commit.ci/badge/github/pytask-dev/pytask-r/main.svg
+    :target: https://results.pre-commit.ci/latest/github/pytask-dev/pytask-r/main
+    :alt: pre-commit.ci status
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
@@ -24,9 +39,14 @@ Run R scripts with pytask.
 Installation
 ------------
 
-Install the plugin with
+pytask-r is available on `PyPI <https://pypi.org/project/pytask-r>`_ and `Anaconda.org
+<https://anaconda.org/pytask/pytask-r>`_. Install it with
 
 .. code-block:: console
+
+    $ pip install pytask-r
+
+    # or
 
     $ conda config --add channels conda-forge --add channels pytask
     $ conda install pytask-r
