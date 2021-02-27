@@ -9,10 +9,10 @@ import versioneer
 README = Path("README.rst").read_text()
 
 PROJECT_URLS = {
-    "Documentation": "https://github.com/pytask-dev/pytask-latex",
-    "Github": "https://github.com/pytask-dev/pytask-latex",
-    "Tracker": "https://github.com/pytask-dev/pytask-latex/issues",
-    "Changelog": "https://github.com/pytask-dev/pytask-latex/blob/main/CHANGES.rst",
+    "Documentation": "https://github.com/pytask-dev/pytask-r",
+    "Github": "https://github.com/pytask-dev/pytask-r",
+    "Tracker": "https://github.com/pytask-dev/pytask-r/issues",
+    "Changelog": "https://github.com/pytask-dev/pytask-r/blob/main/CHANGES.rst",
 }
 
 
@@ -25,6 +25,8 @@ setup(
     long_description_content_type="text/x-rst",
     author="Tobias Raabe",
     author_email="raabe@posteo.de",
+    url=PROJECT_URLS["Github"],
+    project_urls=PROJECT_URLS,
     python_requires=">=3.6",
     license="MIT",
     classifiers=[

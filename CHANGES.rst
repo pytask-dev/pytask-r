@@ -7,6 +7,12 @@ all releases are available on `PyPI <https://pypi.org/project/pytask-r>`_ and
 `Anaconda.org <https://anaconda.org/pytask/pytask-r>`_.
 
 
+0.0.8 - 2021-xx-xx
+------------------
+
+- :gh:`10` fixes some post-release issues.
+
+
 0.0.7 - 2021-02-25
 ------------------
 
