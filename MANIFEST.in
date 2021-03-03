@@ -1,11 +1,12 @@
-include LICENSE
-include versioneer.py
-include src/pytask_r/_version.py
+prune .conda
+prune tests
 
 exclude *.rst
 exclude *.yml
 exclude *.yaml
 exclude tox.ini
 
-prune .conda
-prune tests
+include LICENSE
+include README.rst
+include versioneer.py
+include src/pytask_r/_version.py
