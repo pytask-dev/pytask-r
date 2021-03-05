@@ -19,7 +19,7 @@ PROJECT_URLS = {
 setup(
     name="pytask-r",
     version=versioneer.get_version(),
-    cmd_class=versioneer.get_cmdclass(),
+    cmdclass=versioneer.get_cmdclass(),
     description="Run R scripts with pytask.",
     long_description=README,
     long_description_content_type="text/x-rst",
@@ -40,11 +40,11 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: R",
     ],
-    install_requires=["pytask >= 0.0.9"],
+    install_requires=["click", "pytask >= 0.0.9"],
     platforms="any",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     entry_points={"pytask": ["pytask_r = pytask_r.plugin"]},
     include_package_data=True,
-    zip_false=False,
+    zip_safe=False,
 )

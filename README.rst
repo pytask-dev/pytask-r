@@ -6,17 +6,17 @@
     :alt: PyPI - Python Version
     :target: https://pypi.org/project/pytask-r
 
-.. image:: https://anaconda.org/pytask/pytask-r/badges/version.svg
-    :target: https://anaconda.org/pytask/pytask-r
+.. image:: https://img.shields.io/conda/vn/conda-forge/pytask-r.svg
+    :target: https://anaconda.org/conda-forge/pytask-r
 
-.. image:: https://anaconda.org/pytask/pytask-r/badges/platforms.svg
-    :target: https://anaconda.org/pytask/pytask-r
+.. image:: https://img.shields.io/conda/pn/conda-forge/pytask-r.svg
+    :target: https://anaconda.org/conda-forge/pytask-r
 
 .. image:: https://img.shields.io/pypi/l/pytask-r
     :alt: PyPI - License
 
-.. image:: https://github.com/pytask-dev/pytask-r/workflows/Continuous%20Integration%20Workflow/badge.svg?branch=main
-    :target: https://github.com/pytask-dev/pytask-r/actions?query=branch%3Amain
+.. image:: https://img.shields.io/github/workflow/status/pytask-dev/pytask-r/Continuous%20Integration%20Workflow/main
+   :target: https://github.com/pytask-dev/pytask-r/actions?query=branch%3Amain
 
 .. image:: https://codecov.io/gh/pytask-dev/pytask-r/branch/main/graph/badge.svg
     :target: https://codecov.io/gh/pytask-dev/pytask-r
@@ -40,7 +40,7 @@ Installation
 ------------
 
 pytask-r is available on `PyPI <https://pypi.org/project/pytask-r>`_ and `Anaconda.org
-<https://anaconda.org/pytask/pytask-r>`_. Install it with
+<https://anaconda.org/conda-forge/pytask-r>`_. Install it with
 
 .. code-block:: console
 
@@ -48,8 +48,7 @@ pytask-r is available on `PyPI <https://pypi.org/project/pytask-r>`_ and `Anacon
 
     # or
 
-    $ conda config --add channels conda-forge --add channels pytask
-    $ conda install pytask-r
+    $ conda install -c conda-forge pytask-r
 
 You also need to have R installed and ``Rscript`` on your command line. Test it by
 typing the following on the command line
