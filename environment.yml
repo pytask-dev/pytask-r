@@ -2,8 +2,7 @@ name: pytask-r
 
 channels:
   - conda-forge
-  - r
-  - pytask
+  - nodefaults
 
 dependencies:
   - python
