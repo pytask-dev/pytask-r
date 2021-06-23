@@ -85,15 +85,21 @@ def test_pytask_collect_task(name, expected):
     ],
 )
 @pytest.mark.parametrize("r_source_key", ["source", "script"])
-def test_pytask_collect_task_teardown(depends_on, produces, expectation, r_source_key):
+def test_pytask_collect_task_teardown(
+    tmp_path, depends_on, produces, expectation, r_source_key
+):
     session = DummyClass()
     session.config = {"r_source_key": r_source_key}
 
     task = DummyClass()
+    task.path = tmp_path / "task_dummy.py"
+    task.name = tmp_path.as_posix() + "task_dummy.py::task_dummy"
     task.depends_on = {
-        i: FilePathNode.from_path(Path(n)) for i, n in enumerate(depends_on)
+        i: FilePathNode.from_path(tmp_path / n) for i, n in enumerate(depends_on)
     }
-    task.produces = {i: FilePathNode.from_path(Path(n)) for i, n in enumerate(produces)}
+    task.produces = {
+        i: FilePathNode.from_path(tmp_path / n) for i, n in enumerate(produces)
+    }
     task.markers = [Mark("r", (), {})]
     task.function = task_dummy
     task.function.pytaskmark = task.markers
