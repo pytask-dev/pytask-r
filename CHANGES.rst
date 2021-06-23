@@ -11,6 +11,7 @@ all releases are available on `PyPI <https://pypi.org/project/pytask-r>`_ and
 -------------------
 
 - :gh:`15` fixes the tests related to changes in pytask.
+- :gh:`16` replaces versioneer with setuptools-scm.
 
 
 0.0.9 - 2021-03-05
