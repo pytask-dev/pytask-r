@@ -7,11 +7,12 @@ all releases are available on `PyPI <https://pypi.org/project/pytask-r>`_ and
 `Anaconda.org <https://anaconda.org/conda-forge/pytask-r>`_.
 
 
-0.0.10 - 2021-xx-xx
--------------------
+0.1.0 - 2021-07-21
+------------------
 
 - :gh:`15` fixes the tests related to changes in pytask.
 - :gh:`16` replaces versioneer with setuptools-scm.
+- :gh:`18` aligns pytask-r with pytask v0.1.0.
 
 
 0.0.9 - 2021-03-05
