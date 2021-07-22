@@ -7,7 +7,7 @@ all releases are available on `PyPI <https://pypi.org/project/pytask-r>`_ and
 `Anaconda.org <https://anaconda.org/conda-forge/pytask-r>`_.
 
 
-0.1.0 - 2021-07-21
+0.1.0 - 2021-07-22
 ------------------
 
 - :gh:`15` fixes the tests related to changes in pytask.
