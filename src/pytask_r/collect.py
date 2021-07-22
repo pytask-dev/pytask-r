@@ -8,8 +8,8 @@ from typing import Sequence
 from typing import Union
 
 from _pytask.config import hookimpl
-from _pytask.mark import get_specific_markers_from_task
-from _pytask.mark import has_marker
+from _pytask.mark_utils import get_specific_markers_from_task
+from _pytask.mark_utils import has_marker
 from _pytask.nodes import FilePathNode
 from _pytask.nodes import PythonFunctionTask
 from _pytask.parametrize import _copy_func
