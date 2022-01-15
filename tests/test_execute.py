@@ -97,9 +97,7 @@ def test_raise_error_if_rscript_is_not_found(tmp_path, monkeypatch):
     tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
 
     # Hide Rscript if available.
-    monkeypatch.setattr(
-        "pytask_r.execute.shutil.which", lambda x: None  # noqa: U100
-    )
+    monkeypatch.setattr("pytask_r.execute.shutil.which", lambda x: None)  # noqa: U100
 
     session = main({"paths": tmp_path})
 
