@@ -7,6 +7,13 @@ all releases are available on `PyPI <https://pypi.org/project/pytask-r>`_ and
 `Anaconda.org <https://anaconda.org/conda-forge/pytask-r>`_.
 
 
+0.1.1 - 2022-02-08
+------------------
+
+- :gh:`22` skips concurrent CI builds.
+- :gh:`23` deprecate Python 3.6 and add support for Python 3.10.
+
+
 0.1.0 - 2021-07-22
 ------------------
 
