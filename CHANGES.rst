@@ -7,6 +7,12 @@ all releases are available on `PyPI <https://pypi.org/project/pytask-r>`_ and
 `Anaconda.org <https://anaconda.org/conda-forge/pytask-r>`_.
 
 
+0.2.0 - 2022-xx-xx
+------------------
+
+- :gh:`24` removes an unnecessary hook implementation.
+
+
 0.1.1 - 2022-02-08
 ------------------
 

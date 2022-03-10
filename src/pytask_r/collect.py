@@ -9,9 +9,7 @@ from typing import Sequence
 
 from _pytask.config import hookimpl
 from _pytask.mark_utils import get_specific_markers_from_task
-from _pytask.mark_utils import has_marker
 from _pytask.nodes import FilePathNode
-from _pytask.nodes import PythonFunctionTask
 from _pytask.parametrize import _copy_func
 
 
@@ -33,23 +31,6 @@ def run_r_script(r):
     """Run an R script."""
     print("Executing " + " ".join(r) + ".")  # noqa: T001
     subprocess.run(r, check=True)
-
-
-@hookimpl
-def pytask_collect_task(session, path, name, obj):
-    """Collect a task which is a function.
-
-    There is some discussion on how to detect functions in this `thread
-    <https://stackoverflow.com/q/624926/7523785>`_. :class:`types.FunctionType` does not
-    detect built-ins which is not possible anyway.
-
-    """
-    if name.startswith("task_") and callable(obj) and has_marker(obj, "r"):
-        task = PythonFunctionTask.from_path_name_function_session(
-            path, name, obj, session
-        )
-
-        return task
 
 
 @hookimpl
