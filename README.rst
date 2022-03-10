@@ -16,7 +16,7 @@
     :alt: PyPI - License
     :target: https://pypi.org/project/pytask-r
 
-.. image:: https://img.shields.io/github/workflow/status/pytask-dev/pytask-r/Continuous%20Integration%20Workflow/main
+.. image:: https://img.shields.io/github/workflow/status/pytask-dev/pytask-r/main/main
    :target: https://github.com/pytask-dev/pytask-r/actions?query=branch%3Amain
 
 .. image:: https://codecov.io/gh/pytask-dev/pytask-r/branch/main/graph/badge.svg
