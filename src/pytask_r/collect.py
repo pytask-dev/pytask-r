@@ -7,10 +7,14 @@ from types import FunctionType
 from typing import Iterable
 from typing import Sequence
 
+from pytask import depends_on
 from pytask import FilePathNode
-from pytask import get_marks
 from pytask import has_mark
 from pytask import hookimpl
+from pytask import parse_nodes
+from pytask import produces
+from pytask import remove_marks
+from pytask import Task
 
 
 def r(options: str | Iterable[str] | None = None):
@@ -27,30 +31,51 @@ def r(options: str | Iterable[str] | None = None):
     return options
 
 
-def run_r_script(r):
+def run_r_script(options):
     """Run an R script."""
-    print("Executing " + " ".join(r) + ".")  # noqa: T001
-    subprocess.run(r, check=True)
+    print("Executing " + " ".join(options) + ".")  # noqa: T001
+    subprocess.run(options, check=True)
 
 
 @hookimpl
-def pytask_collect_task_teardown(session, task):
+def pytask_collect_task(session, path, name, obj):
     """Perform some checks."""
-    if has_mark(task, "r"):
+    __tracebackhide__ = True
+
+    if has_mark(obj, "r"):
+        obj, marks = remove_marks(obj, "r")
+
+        r_mark = _merge_all_markers(marks)
+        obj.pytask_meta.markers.append(r_mark)
+
+        dependencies = parse_nodes(session, path, name, obj, depends_on)
+        products = parse_nodes(session, path, name, obj, produces)
+
+        markers = obj.pytask_meta.markers if hasattr(obj, "pytask_meta") else []
+        kwargs = obj.pytask_meta.kwargs if hasattr(obj, "pytask_meta") else {}
+
+        task = Task(
+            base_name=name,
+            path=path,
+            function=_copy_func(run_r_script),
+            depends_on=dependencies,
+            produces=products,
+            markers=markers,
+            kwargs=kwargs,
+        )
+
+        args = r(*r_mark.args, **r_mark.kwargs)
+        options = _prepare_cmd_options(session, task, args)
+
+        task.function = functools.partial(task.function, options=options)
+
         source = _get_node_from_dictionary(task.depends_on, "source")
         if isinstance(source, FilePathNode) and source.value.suffix not in [".r", ".R"]:
             raise ValueError(
                 "The first dependency of an R task must be the executable script."
             )
 
-        r_function = _copy_func(run_r_script)
-
-        merged_marks = _merge_all_markers(task)
-        args = r(*merged_marks.args, **merged_marks.kwargs)
-        options = _prepare_cmd_options(session, task, args)
-        r_function = functools.partial(r_function, r=options)
-
-        task.function = r_function
+        return task
 
 
 def _get_node_from_dictionary(obj, key, fallback=0):
@@ -60,11 +85,10 @@ def _get_node_from_dictionary(obj, key, fallback=0):
     return obj
 
 
-def _merge_all_markers(task):
+def _merge_all_markers(marks):
     """Combine all information from markers for the compile r function."""
-    r_marks = get_marks(task, "r")
-    mark = r_marks[0]
-    for mark_ in r_marks[1:]:
+    mark = marks[0]
+    for mark_ in marks[1:]:
         mark = mark.combined_with(mark_)
     return mark
 

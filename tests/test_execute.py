@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 from conftest import needs_rscript
+from pytask import ExitCode
 from pytask import main
 from pytask import Mark
 from pytask import Task
@@ -79,7 +80,7 @@ def test_run_r_script(tmp_path, depends_on):
     os.chdir(tmp_path)
     session = main({"paths": tmp_path})
 
-    assert session.exit_code == 0
+    assert session.exit_code == ExitCode.OK
     assert tmp_path.joinpath("out.txt").exists()
 
 
@@ -109,7 +110,7 @@ def test_raise_error_if_rscript_is_not_found(tmp_path, monkeypatch):
 
     session = main({"paths": tmp_path})
 
-    assert session.exit_code == 1
+    assert session.exit_code == ExitCode.FAILED
     assert isinstance(session.execution_reports[0].exc_info[1], RuntimeError)
 
 
@@ -139,7 +140,7 @@ def test_run_r_script_w_saving_workspace(tmp_path):
     os.chdir(tmp_path)
     session = main({"paths": tmp_path})
 
-    assert session.exit_code == 0
+    assert session.exit_code == ExitCode.OK
     assert tmp_path.joinpath("out.txt").exists()
 
 
@@ -169,4 +170,4 @@ def test_run_r_script_w_wrong_cmd_option(tmp_path):
     os.chdir(tmp_path)
     session = main({"paths": tmp_path})
 
-    assert session.exit_code == 0
+    assert session.exit_code == ExitCode.OK

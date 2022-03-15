@@ -1,16 +1,12 @@
 from __future__ import annotations
 
-from contextlib import ExitStack as does_not_raise  # noqa: N813
 from pathlib import Path
 
 import pytest
-from pytask import FilePathNode
 from pytask import Mark
-from pytask import Task
 from pytask_r.collect import _get_node_from_dictionary
 from pytask_r.collect import _merge_all_markers
 from pytask_r.collect import _prepare_cmd_options
-from pytask_r.collect import pytask_collect_task_teardown
 from pytask_r.collect import r
 
 
@@ -51,44 +47,8 @@ def test_r(r_args, expected):
     ],
 )
 def test_merge_all_markers(marks, expected):
-    task = Task(base_name="task_example", path=Path(), function=None, markers=marks)
-    out = _merge_all_markers(task)
+    out = _merge_all_markers(marks)
     assert out == expected
-
-
-@pytest.mark.unit
-@pytest.mark.parametrize(
-    "depends_on, produces, expectation",
-    [
-        (["script.r"], ["any_out.rds"], does_not_raise()),
-        (["script.R"], ["any_out.rds"], does_not_raise()),
-        (["script.txt"], ["any_out.rds"], pytest.raises(ValueError)),
-        (["input.rds", "script.r"], ["any_out.rds"], pytest.raises(ValueError)),
-        (["input.rds", "script.R"], ["any_out.rds"], pytest.raises(ValueError)),
-    ],
-)
-@pytest.mark.parametrize("r_source_key", ["source", "script"])
-def test_pytask_collect_task_teardown(
-    tmp_path, depends_on, produces, expectation, r_source_key
-):
-    session = DummyClass()
-    session.config = {"r_source_key": r_source_key}
-
-    task = Task(
-        base_name="task_example",
-        path=tmp_path / "task_dummy.py",
-        function=None,
-        depends_on={
-            i: FilePathNode.from_path(tmp_path / n) for i, n in enumerate(depends_on)
-        },
-        produces={
-            i: FilePathNode.from_path(tmp_path / n) for i, n in enumerate(produces)
-        },
-        markers=[Mark("r", (), {})],
-    )
-
-    with expectation:
-        pytask_collect_task_teardown(session, task)
 
 
 @pytest.mark.unit
