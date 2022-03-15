@@ -21,10 +21,11 @@ dependencies:
   - r-base
 
   # Misc
-  - bumpversion
   - jupyterlab
-  - pdbpp
   - pre-commit
   - pytest-cov
   - pytest-xdist
   - black
+
+  - pip:
+    - -e .

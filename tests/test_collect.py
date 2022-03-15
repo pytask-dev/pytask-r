@@ -4,8 +4,9 @@ from contextlib import ExitStack as does_not_raise  # noqa: N813
 from pathlib import Path
 
 import pytest
-from _pytask.mark import Mark
-from _pytask.nodes import FilePathNode
+from pytask import FilePathNode
+from pytask import Mark
+from pytask import Task
 from pytask_r.collect import _get_node_from_dictionary
 from pytask_r.collect import _merge_all_markers
 from pytask_r.collect import _prepare_cmd_options
@@ -50,8 +51,7 @@ def test_r(r_args, expected):
     ],
 )
 def test_merge_all_markers(marks, expected):
-    task = DummyClass()
-    task.markers = marks
+    task = Task(base_name="task_example", path=Path(), function=None, markers=marks)
     out = _merge_all_markers(task)
     assert out == expected
 
@@ -74,18 +74,18 @@ def test_pytask_collect_task_teardown(
     session = DummyClass()
     session.config = {"r_source_key": r_source_key}
 
-    task = DummyClass()
-    task.path = tmp_path / "task_dummy.py"
-    task.name = tmp_path.as_posix() + "task_dummy.py::task_dummy"
-    task.depends_on = {
-        i: FilePathNode.from_path(tmp_path / n) for i, n in enumerate(depends_on)
-    }
-    task.produces = {
-        i: FilePathNode.from_path(tmp_path / n) for i, n in enumerate(produces)
-    }
-    task.markers = [Mark("r", (), {})]
-    task.function = task_dummy
-    task.function.pytaskmark = task.markers
+    task = Task(
+        base_name="task_example",
+        path=tmp_path / "task_dummy.py",
+        function=None,
+        depends_on={
+            i: FilePathNode.from_path(tmp_path / n) for i, n in enumerate(depends_on)
+        },
+        produces={
+            i: FilePathNode.from_path(tmp_path / n) for i, n in enumerate(produces)
+        },
+        markers=[Mark("r", (), {})],
+    )
 
     with expectation:
         pytask_collect_task_teardown(session, task)

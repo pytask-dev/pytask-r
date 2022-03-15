@@ -3,11 +3,13 @@ from __future__ import annotations
 import os
 import textwrap
 from contextlib import ExitStack as does_not_raise  # noqa: N813
+from pathlib import Path
 
 import pytest
-from _pytask.mark import Mark
 from conftest import needs_rscript
 from pytask import main
+from pytask import Mark
+from pytask import Task
 from pytask_r.execute import pytask_execute_task_setup
 
 
@@ -30,8 +32,12 @@ def test_pytask_execute_task_setup(monkeypatch, found_r, expectation):
         "pytask_r.execute.shutil.which", lambda x: found_r  # noqa: U100
     )
 
-    task = DummyTask()
-    task.markers = [Mark("r", (), {})]
+    task = Task(
+        base_name="task_example",
+        path=Path(),
+        function=None,
+        markers=[Mark("r", (), {})],
+    )
 
     with expectation:
         pytask_execute_task_setup(task)
