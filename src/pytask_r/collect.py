@@ -1,7 +1,6 @@
 """Collect tasks."""
 from __future__ import annotations
 
-import copy
 import functools
 import subprocess
 from types import FunctionType
@@ -45,7 +44,6 @@ def pytask_collect_task_teardown(session, task):
             )
 
         r_function = _copy_func(run_r_script)
-        r_function.pytask_meta = copy.deepcopy(task.function.pytask_meta)
 
         merged_marks = _merge_all_markers(task)
         args = r(*merged_marks.args, **merged_marks.kwargs)
