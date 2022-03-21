@@ -1,91 +1,141 @@
 from __future__ import annotations
 
-from pathlib import Path
+from contextlib import ExitStack as does_not_raise  # noqa: N813
 
 import pytest
 from pytask import Mark
-from pytask_r.collect import _get_node_from_dictionary
-from pytask_r.collect import _merge_all_markers
-from pytask_r.collect import _prepare_cmd_options
+from pytask_r.collect import _parse_r_mark
 from pytask_r.collect import r
-
-
-class DummyClass:
-    pass
-
-
-def task_dummy():
-    pass
+from pytask_r.serialization import SERIALIZER
 
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    "r_args, expected",
+    "args, kwargs, expectation, expected",
     [
-        (None, []),
-        ("--some-option", ["--some-option"]),
-        (["--a", "--b"], ["--a", "--b"]),
-    ],
-)
-def test_r(r_args, expected):
-    options = r(r_args)
-    assert options == expected
-
-
-@pytest.mark.unit
-@pytest.mark.parametrize(
-    "marks, expected",
-    [
+        ((), {}, pytest.raises(RuntimeError, match="The old syntax"), None),
         (
-            [Mark("r", ("--a",), {}), Mark("r", ("--b",), {})],
-            Mark("r", ("--a", "--b"), {}),
+            ("-o"),
+            {"script": "script.r"},
+            pytest.raises(RuntimeError, match="The old syntax"),
+            None,
         ),
         (
-            [Mark("r", ("--a",), {}), Mark("r", (), {"r": "--b"})],
-            Mark("r", ("--a",), {"r": "--b"}),
+            (),
+            {"options": ("-o")},
+            pytest.raises(RuntimeError, match="The old syntax"),
+            None,
+        ),
+        (
+            (),
+            {
+                "script": "script.r",
+                "options": "--option",
+                "serializer": "json",
+                "suffix": ".json",
+            },
+            does_not_raise(),
+            ("script.r", ["--option"], "json", ".json"),
+        ),
+        (
+            (),
+            {
+                "script": "script.r",
+                "options": [1],
+                "serializer": "yaml",
+                "suffix": ".yaml",
+            },
+            does_not_raise(),
+            ("script.r", ["1"], "yaml", ".yaml"),
         ),
     ],
 )
-def test_merge_all_markers(marks, expected):
-    out = _merge_all_markers(marks)
-    assert out == expected
+def test_r(args, kwargs, expectation, expected):
+    with expectation:
+        result = r(*args, **kwargs)
+        assert result == expected
 
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    "obj, key, expected",
+    "mark, default_options, default_serializer, default_suffix, expectation, expected",
     [
-        (1, "asds", 1),
-        (1, None, 1),
-        ({"a": 1}, "a", 1),
-        ({0: 1}, "a", 1),
+        (
+            Mark("r", (), {}),
+            [],
+            None,
+            ".json",
+            pytest.raises(RuntimeError, match="The old syntax for @pytask.mark.r"),
+            Mark(
+                "r",
+                (),
+                {
+                    "script": None,
+                    "options": [],
+                    "serializer": None,
+                    "suffix": ".json",
+                },
+            ),
+        ),
+        (
+            Mark("r", ("-o"), {}),
+            [],
+            None,
+            ".json",
+            pytest.raises(RuntimeError, match="The old syntax for @pytask.mark.r"),
+            None,
+        ),
+        (
+            Mark("r", (), {"script": "script.r"}),
+            [],
+            None,
+            ".json",
+            does_not_raise(),
+            Mark(
+                "r",
+                (),
+                {
+                    "script": "script.r",
+                    "options": [],
+                    "serializer": None,
+                    "suffix": ".json",
+                },
+            ),
+        ),
+        (
+            Mark(
+                "r",
+                (),
+                {
+                    "script": "script.r",
+                    "serializer": "json",
+                },
+            ),
+            [],
+            None,
+            None,
+            does_not_raise(),
+            Mark(
+                "r",
+                (),
+                {
+                    "script": "script.r",
+                    "options": [],
+                    "serializer": "json",
+                    "suffix": SERIALIZER["json"]["suffix"],
+                },
+            ),
+        ),
     ],
 )
-def test_get_node_from_dictionary(obj, key, expected):
-    result = _get_node_from_dictionary(obj, key)
-    assert result == expected
-
-
-@pytest.mark.unit
-@pytest.mark.parametrize(
-    "args",
-    [
-        [],
-        ["a"],
-        ["a", "b"],
-    ],
-)
-@pytest.mark.parametrize("r_source_key", ["source", "script"])
-def test_prepare_cmd_options(args, r_source_key):
-    session = DummyClass()
-    session.config = {"r_source_key": r_source_key}
-
-    node = DummyClass()
-    node.path = Path("script.r")
-    task = DummyClass()
-    task.depends_on = {r_source_key: node}
-    task.name = "task"
-
-    result = _prepare_cmd_options(session, task, args)
-
-    assert result == ["Rscript", "script.r", *args]
+def test_parse_r_mark(
+    mark,
+    default_options,
+    default_serializer,
+    default_suffix,
+    expectation,
+    expected,
+):
+    with expectation:
+        out = _parse_r_mark(mark, default_options, default_serializer, default_suffix)
+        assert out == expected
