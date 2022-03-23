@@ -74,73 +74,86 @@ Or install install R from the official `R Project <https://www.r-project.org/>`_
 Usage
 -----
 
-Similarly to normal task functions which execute Python code, you define tasks to
-execute scripts written in R with Python functions. The difference is that the function
-body does not contain any logic, but the decorator tells pytask how to handle the task.
-
-Here is an example where you want to run ``script.r``.
+To create a task which runs a R script, define a task function with the
+``@pytask.mark.r`` decorator. The ``script`` keyword provides an absolute path or path
+relative to the task module to the R script.
 
 .. code-block:: python
 
     import pytask
 
 
-    @pytask.mark.r
-    @pytask.mark.depends_on("script.r")
+    @pytask.mark.r(script="script.r")
     @pytask.mark.produces("out.rds")
     def task_run_r_script():
         pass
-
-Note that, you need to apply the ``@pytask.mark.r`` marker so that pytask-r handles the
-task.
 
 If you are wondering why the function body is empty, know that pytask-r replaces the
 body with a predefined internal function. See the section on implementation details for
 more information.
 
 
-Multiple dependencies and products
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Dependencies and Products
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-What happens if a task has more dependencies? Using a list, the R script which should be
-executed must be found in the first position of the list.
+Dependencies and products can be added as with a normal pytask task using the
+``@pytask.mark.depends_on`` and ``@pytask.mark.produces`` decorators. which is explained
+in this `tutorial
+<https://pytask-dev.readthedocs.io/en/stable/tutorials/defining_dependencies_products.html>`_.
+
+
+Accessing dependencies and products in the script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To access the paths of dependencies and products in the script, pytask-r stores the
+information by default in a ``.json`` file. The path to this file is passed as a
+positional argument to the script. Inside the script, you can read the information.
+
+.. code-block:: r
+
+    library(jsonlite)
+
+    args <- commandArgs(trailingOnly=TRUE)
+
+    path_to_json <- args[length(args)]
+
+    config <- read_json(path_to_json)
+
+    config$produces  # Is the path to the output file "../out.csv".
+
+The ``.json`` file is stored in the same folder as the task in a ``.pytask`` directory.
+
+To parse the JSON file, you need to install `jsonlite
+<https://github.com/jeroen/jsonlite>`_.
+
+You can also pass any other information to your script by using the
+``@pytask.mark.task`` decorator.
 
 .. code-block:: python
 
-    @pytask.mark.r
-    @pytask.mark.depends_on(["script.r", "input.rds"])
+    @pytask.mark.task(kwargs={"number": 1})
+    @pytask.mark.r(script="script.r")
     @pytask.mark.produces("out.rds")
     def task_run_r_script():
         pass
 
-If you use a dictionary to pass dependencies to the task, pytask-r will, first, look
-for a ``"source"`` key in the dictionary and, secondly, under the key ``0``.
+and inside the script use
 
-.. code-block:: python
+.. code-block:: r
 
-    @pytask.mark.r
-    @pytask.mark.depends_on({"source": "script.r", "input": "input.rds"})
-    def task_run_r_script():
-        pass
+    config$number  # Is 1.
 
 
-    # or
+Debugging
+~~~~~~~~~
 
+In case a task throws an error, you might want to execute the script independently from
+pytask. After a failed execution, you see the command which executed the R script in
+the report of the task. It looks roughly like this
 
-    @pytask.mark.r
-    @pytask.mark.depends_on({0: "script.r", "input": "input.rds"})
-    def task_run_r_script():
-        pass
+.. code-block:: console
 
-
-    # or two decorators for the function, if you do not assign a name to the input.
-
-
-    @pytask.mark.r
-    @pytask.mark.depends_on({"source": "script.r"})
-    @pytask.mark.depends_on("input.rds")
-    def task_run_r_script():
-        pass
+    $ Rscript <options> script.r <path-to>/.pytask/task_py_task_example.json
 
 
 Command Line Arguments
@@ -151,91 +164,126 @@ following example.
 
 .. code-block:: python
 
-    @pytask.mark.r("value")
-    @pytask.mark.depends_on("script.r")
+    @pytask.mark.r(script="script.r", options="--vanilla")
     @pytask.mark.produces("out.rds")
     def task_run_r_script():
         pass
 
-And in your ``script.r``, you can intercept the value with
 
-.. code-block:: r
+Repeating tasks with different scripts or inputs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    args <- commandArgs(trailingOnly=TRUE)
-    arg <- args[1]  # holds ``"value"``
+You can also repeat the execution of tasks, meaning executing multiple R scripts or
+passing different command line arguments to the same R script.
 
-
-Parametrization
-~~~~~~~~~~~~~~~
-
-You can also parametrize the execution of scripts, meaning executing multiple R scripts
-as well as passing different command line arguments to the same R script.
-
-The following task executes two R scripts which produce different outputs.
+The following task executes two R scripts, ``script_1.r`` and ``script_2.r``,
+which produce different outputs.
 
 .. code-block:: python
 
-    from src.config import BLD, SRC
+    for i in range(2):
 
+        @pytask.mark.task
+        @pytask.mark.r(script=f"script_{i}.r")
+        @pytask.mark.produces(f"out_{i}.csv")
+        def task_execute_r_script():
+            pass
 
-    @pytask.mark.r
-    @pytask.mark.parametrize(
-        "depends_on, produces",
-        [(SRC / "script_1.r", BLD / "1.rds"), (SRC / "script_2.r", BLD / "2.rds")],
-    )
-    def task_execute_r_script():
-        pass
-
-And the R script includes something like
-
-.. code-block:: r
-
-    args <- commandArgs(trailingOnly=TRUE)
-    produces <- args[1]  # holds the path
-
-If you want to pass different command line arguments to the same R script, you have to
-include the ``@pytask.mark.r`` decorator in the parametrization just like with
-``@pytask.mark.depends_on`` and ``@pytask.mark.produces``.
+If you want to pass different inputs to the same R script, pass these arguments with
+the ``kwargs`` keyword of the ``@pytask.mark.task`` decorator.
 
 .. code-block:: python
 
-    @pytask.mark.depends_on("script.r")
-    @pytask.mark.parametrize(
-        "produces, r",
-        [(BLD / "output_1.rds", "1"), (BLD / "output_2.rds", "2")],
-    )
-    def task_execute_r_script():
-        pass
+    for i in range(2):
+
+        @pytask.mark.task(kwargs={"i": i})
+        @pytask.mark.r(script="script.r")
+        @pytask.mark.produces(f"output_{i}.csv")
+        def task_execute_r_script():
+            pass
+
+and inside the task access the argument ``i`` with
+
+.. code-block:: r
+
+    library(jsonlite)
+
+    args <- commandArgs(trailingOnly=TRUE)
+
+    path_to_json <- args[length(args)]
+
+    config <- read_json(path_to_json)
+
+    config$produces  # Is the path to the output file "../output_{i}.csv".
+
+    config$i  # Is the number.
+
+
+Serializers
+~~~~~~~~~~~
+
+You can also serialize your data with any other tool you like. By default, pytask-r
+also supports YAML (if PyYaml is installed).
+
+Use the ``serializer`` keyword arguments of the ``@pytask.mark.r`` decorator with
+
+.. code-block:: python
+
+    @pytask.mark.r(script="script.r", serializer="yaml")
+    def task_example():
+        ...
+
+And in your R script use
+
+.. code-block:: r
+
+    import YAML
+    config = YAML.load_file(ARGS[1])
+
+Note that the ``YAML`` package needs to be installed.
+
+If you need a custom serializer, you can also provide any callable to ``serializer``
+which transforms data to a string. Use ``suffix`` to set the correct file ending.
+
+Here is a replication of the JSON example.
+
+.. code-block:: python
+
+    import json
+
+
+    @pytask.mark.r(script="script.r", serializer=json.dumps, suffix=".json")
+    def task_example():
+        ...
 
 
 Configuration
--------------
+~~~~~~~~~~~~~
 
-If you want to change the name of the key which identifies the R script, change the
-following default configuration in your pytask configuration file.
+You can influence the default behavior of pytask-r with some configuration values.
 
-.. code-block:: ini
+r_serializer
+    Use this option to change the default serializer.
 
-    r_source_key = source
+    .. code-block:: ini
 
+        r_serializer = json
 
-Implementation Details
-----------------------
+r_suffix
+    Use this option to set the default suffix of the file which contains serialized
+    paths to dependencies and products and more.
 
-The plugin is a convenient wrapper around
+    .. code-block:: ini
 
-.. code-block:: python
+        r_suffix = .json
 
-    import subprocess
+r_options
+    Use this option to set default options for each task which are separated by
+    whitespace.
 
-    subprocess.run(["Rscript", "script.r"], check=True)
+    .. code-block:: ini
 
-to which you can always resort to when the plugin does not deliver functionality you
-need.
-
-It is not possible to enter a post-mortem debugger when an error happens in the R script
-or enter the debugger when starting the script. If there exists a solution for that,
-hints as well as contributions are highly appreciated.
+        r_options = --vanilla
 
 
 Changes
