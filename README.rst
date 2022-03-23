@@ -1,3 +1,6 @@
+pytask-r
+========
+
 .. image:: https://img.shields.io/pypi/v/pytask-r?color=blue
     :alt: PyPI
     :target: https://pypi.org/project/pytask-r
@@ -30,9 +33,6 @@
     :target: https://github.com/psf/black
 
 ------
-
-pytask-r
-========
 
 Run R scripts with pytask.
 
