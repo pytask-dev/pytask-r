@@ -10,7 +10,7 @@
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/pytask-dev/pytask-r/main.svg)](https://results.pre-commit.ci/latest/github/pytask-dev/pytask-r/main)
 [![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-------------------------------------------------------------------------
+______________________________________________________________________
 
 Run R scripts with pytask.
 
@@ -233,8 +233,8 @@ r_serializer = "json"
 
 **`r_suffix`**
 
-Use this option to set the default suffix of the file which contains serialized
-paths to dependencies and products and more.
+Use this option to set the default suffix of the file which contains serialized paths to
+dependencies and products and more.
 
 ```toml
 r_suffix = ".json"
@@ -242,8 +242,7 @@ r_suffix = ".json"
 
 **`r_options`**
 
-Use this option to set default options for each task which are separated by
-whitespace.
+Use this option to set default options for each task which are separated by whitespace.
 
 ```toml
 r_options = ["--vanilla"]
