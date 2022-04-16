@@ -28,6 +28,7 @@ dependencies:
   - pre-commit
   - pytest-cov
   - pytest-xdist
+  - tox-conda
   - black
 
   - pip:
