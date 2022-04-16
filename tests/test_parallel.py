@@ -78,14 +78,14 @@ def test_parallel_parametrization_over_source_files_w_parametrize(
 
     r_script = f"""
     {parse_config_code}
-    Sys.sleep(4)
+    Sys.sleep(6)
     saveRDS(config$content, file=config$produces)
     """
     tmp_path.joinpath("script_1.r").write_text(textwrap.dedent(r_script))
 
     r_script = f"""
     {parse_config_code}
-    Sys.sleep(4)
+    Sys.sleep(6)
     saveRDS(config$content, file=config$produces)
     """
     tmp_path.joinpath("script_2.r").write_text(textwrap.dedent(r_script))
@@ -136,14 +136,14 @@ def test_parallel_parametrization_over_source_files_w_loop(
 
     r_script = f"""
     {parse_config_code}
-    Sys.sleep(4)
+    Sys.sleep(6)
     saveRDS(config$content, file=config$produces)
     """
     tmp_path.joinpath("script_1.r").write_text(textwrap.dedent(r_script))
 
     r_script = f"""
     {parse_config_code}
-    Sys.sleep(4)
+    Sys.sleep(6)
     saveRDS(config$content, file=config$produces)
     """
     tmp_path.joinpath("script_2.r").write_text(textwrap.dedent(r_script))
@@ -191,7 +191,7 @@ def test_parallel_parametrization_over_source_file_w_parametrize(
 
     r_script = f"""
     {parse_config_code}
-    Sys.sleep(4)
+    Sys.sleep(6)
     saveRDS(config$content, file=config$produces)
     """
     tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
@@ -242,7 +242,7 @@ def test_parallel_parametrization_over_source_file_w_loop(
 
     r_script = f"""
     {parse_config_code}
-    Sys.sleep(4)
+    Sys.sleep(6)
     saveRDS(config$content, file=config$produces)
     """
     tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
