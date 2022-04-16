@@ -1,8 +1,8 @@
 """Parametrize tasks."""
 from __future__ import annotations
 
-from _pytask.config import hookimpl
-from _pytask.mark import MARK_GEN as mark  # noqa: N811
+import pytask
+from pytask import hookimpl
 
 
 @hookimpl
@@ -10,4 +10,4 @@ def pytask_parametrize_kwarg_to_marker(obj, kwargs):
     """Attach parametrized r arguments to the function with a marker."""
     if callable(obj):
         if "r" in kwargs:
-            mark.r(kwargs.pop("r"))(obj)
+            pytask.mark.r(**kwargs.pop("r"))(obj)

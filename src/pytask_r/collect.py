@@ -1,107 +1,137 @@
 """Collect tasks."""
 from __future__ import annotations
 
-import copy
 import functools
 import subprocess
-from typing import Iterable
-from typing import Sequence
+from pathlib import Path
+from types import FunctionType
 
-from _pytask.config import hookimpl
-from _pytask.mark_utils import get_specific_markers_from_task
-from _pytask.nodes import FilePathNode
-from _pytask.parametrize import _copy_func
-
-
-def r(options: str | Iterable[str] | None = None):
-    """Specify command line options for Rscript.
-
-    Parameters
-    ----------
-    options : Optional[Union[str, Iterable[str]]]
-        One or multiple command line options passed to Rscript.
-
-    """
-    options = [] if options is None else _to_list(options)
-    options = [str(i) for i in options]
-    return options
+from pytask import depends_on
+from pytask import has_mark
+from pytask import hookimpl
+from pytask import Mark
+from pytask import parse_nodes
+from pytask import produces
+from pytask import remove_marks
+from pytask import Task
+from pytask_r.serialization import SERIALIZER
+from pytask_r.shared import r
 
 
-def run_r_script(r):
+def run_r_script(script: Path, options: list[str], serialized: Path) -> None:
     """Run an R script."""
-    print("Executing " + " ".join(r) + ".")  # noqa: T001
-    subprocess.run(r, check=True)
+    cmd = ["Rscript", script.as_posix(), *options, str(serialized)]
+    print("Executing " + " ".join(cmd) + ".")  # noqa: T001
+    subprocess.run(cmd, check=True)
 
 
 @hookimpl
-def pytask_collect_task_teardown(session, task):
+def pytask_collect_task(session, path, name, obj):
     """Perform some checks."""
-    if get_specific_markers_from_task(task, "r"):
-        source = _get_node_from_dictionary(task.depends_on, "source")
-        if isinstance(source, FilePathNode) and source.value.suffix not in [".r", ".R"]:
+    __tracebackhide__ = True
+
+    if (
+        (name.startswith("task_") or has_mark(obj, "task"))
+        and callable(obj)
+        and has_mark(obj, "r")
+    ):
+        obj, marks = remove_marks(obj, "r")
+
+        if len(marks) > 1:
             raise ValueError(
-                "The first dependency of an R task must be the executable script."
+                f"Task {name!r} has multiple @pytask.mark.r marks, but only one is "
+                "allowed."
             )
 
-        r_function = _copy_func(run_r_script)
-        r_function.pytaskmark = copy.deepcopy(task.function.pytaskmark)
+        mark = _parse_r_mark(
+            mark=marks[0],
+            default_options=session.config["r_options"],
+            default_serializer=session.config["r_serializer"],
+            default_suffix=session.config["r_suffix"],
+        )
+        script, options, _, _ = r(**marks[0].kwargs)
 
-        merged_marks = _merge_all_markers(task)
-        args = r(*merged_marks.args, **merged_marks.kwargs)
-        options = _prepare_cmd_options(session, task, args)
-        r_function = functools.partial(r_function, r=options)
+        obj.pytask_meta.markers.append(mark)
 
-        task.function = r_function
+        dependencies = parse_nodes(session, path, name, obj, depends_on)
+        products = parse_nodes(session, path, name, obj, produces)
+
+        markers = obj.pytask_meta.markers if hasattr(obj, "pytask_meta") else []
+        kwargs = obj.pytask_meta.kwargs if hasattr(obj, "pytask_meta") else {}
+
+        task = Task(
+            base_name=name,
+            path=path,
+            function=_copy_func(run_r_script),
+            depends_on=dependencies,
+            produces=products,
+            markers=markers,
+            kwargs=kwargs,
+        )
+
+        script_node = session.hook.pytask_collect_node(
+            session=session, path=path, node=script
+        )
+
+        if isinstance(task.depends_on, dict):
+            task.depends_on["__script"] = script_node
+            task.attributes["r_keep_dict"] = True
+        else:
+            task.depends_on = {0: task.depends_on, "__script": script_node}
+            task.attributes["r_keep_dict"] = False
+
+        task.function = functools.partial(
+            task.function, script=task.depends_on["__script"].path, options=options
+        )
+
+        return task
 
 
-def _get_node_from_dictionary(obj, key, fallback=0):
-    """Get node from dictionary."""
-    if isinstance(obj, dict):
-        obj = obj.get(key) or obj.get(fallback)
-    return obj
+def _parse_r_mark(mark, default_options, default_serializer, default_suffix):
+    """Parse a Julia mark."""
+    script, options, serializer, suffix = r(**mark.kwargs)
 
+    parsed_kwargs = {}
+    for arg_name, value, default in [
+        ("script", script, None),
+        ("options", options, default_options),
+        ("serializer", serializer, default_serializer),
+    ]:
+        parsed_kwargs[arg_name] = value if value else default
 
-def _merge_all_markers(task):
-    """Combine all information from markers for the compile r function."""
-    r_marks = get_specific_markers_from_task(task, "r")
-    mark = r_marks[0]
-    for mark_ in r_marks[1:]:
-        mark = mark.combined_with(mark_)
+    if (
+        isinstance(parsed_kwargs["serializer"], str)
+        and parsed_kwargs["serializer"] in SERIALIZER
+    ):
+        proposed_suffix = SERIALIZER[parsed_kwargs["serializer"]]["suffix"]
+    else:
+        proposed_suffix = default_suffix
+    parsed_kwargs["suffix"] = suffix if suffix else proposed_suffix
+
+    mark = Mark("r", (), parsed_kwargs)
     return mark
 
 
-def _prepare_cmd_options(session, task, args):
-    """Prepare the command line arguments to execute the do-file.
+def _copy_func(func: FunctionType) -> FunctionType:
+    """Create a copy of a function.
 
-    The last entry changes the name of the log file. We take the task id as a name which
-    is unique and does not cause any errors when parallelizing the execution.
+    Based on https://stackoverflow.com/a/13503277/7523785.
 
-    """
-    source = _get_node_from_dictionary(task.depends_on, session.config["r_source_key"])
-    return ["Rscript", source.path.as_posix(), *args]
-
-
-def _to_list(scalar_or_iter):
-    """Convert scalars and iterables to list.
-
-    Parameters
-    ----------
-    scalar_or_iter : str or list
-
-    Returns
+    Example
     -------
-    list
-
-    Examples
-    --------
-    >>> _to_list("a")
-    ['a']
-    >>> _to_list(["b"])
-    ['b']
+    >>> def _func(): pass
+    >>> copied_func = _copy_func(_func)
+    >>> _func is copied_func
+    False
 
     """
-    return (
-        [scalar_or_iter]
-        if isinstance(scalar_or_iter, str) or not isinstance(scalar_or_iter, Sequence)
-        else list(scalar_or_iter)
+    new_func = FunctionType(
+        func.__code__,
+        func.__globals__,
+        name=func.__name__,
+        argdefs=func.__defaults__,
+        closure=func.__closure__,
     )
+    new_func = functools.update_wrapper(new_func, func)
+    new_func.__kwdefaults__ = func.__kwdefaults__
+    return new_func

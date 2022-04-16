@@ -16,15 +16,20 @@ dependencies:
   - conda-verify
 
   # Package dependencies
-  - pytask >=0.1.0
-  - pytask-parallel >=0.1.0
-  - r-base
+  - pytask >=0.2
+  - pytask-parallel >=0.2
+
+  - r-base >4
+  - r-jsonlite
+  - r-yaml
 
   # Misc
-  - bumpversion
   - jupyterlab
-  - pdbpp
   - pre-commit
   - pytest-cov
   - pytest-xdist
+  - tox-conda
   - black
+
+  - pip:
+    - -e .
