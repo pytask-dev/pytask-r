@@ -15,7 +15,7 @@ of pytask and pytask-r which is among others access to 'depends_on' and 'produce
 and other kwargs inside the R script.
 
 You can find a manual here: \
-https://github.com/pytask-dev/pytask-r/blob/v0.2.0/README.rst
+https://github.com/pytask-dev/pytask-r/blob/v0.2.0/README.md
 
 Upgrading can be as easy as rewriting your current task from
 
