@@ -228,6 +228,7 @@ You can influence the default behavior of pytask-r with some configuration value
 Use this option to change the default serializer.
 
 ```toml
+[tool.pytask.ini_options]
 r_serializer = "json"
 ```
 
@@ -237,6 +238,7 @@ Use this option to set the default suffix of the file which contains serialized 
 dependencies and products and more.
 
 ```toml
+[tool.pytask.ini_options]
 r_suffix = ".json"
 ```
 
@@ -245,6 +247,7 @@ r_suffix = ".json"
 Use this option to set default options for each task which are separated by whitespace.
 
 ```toml
+[tool.pytask.ini_options]
 r_options = ["--vanilla"]
 ```
 
