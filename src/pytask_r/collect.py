@@ -21,7 +21,7 @@ from pytask_r.shared import r
 def run_r_script(script: Path, options: list[str], serialized: Path) -> None:
     """Run an R script."""
     cmd = ["Rscript", script.as_posix(), *options, str(serialized)]
-    print("Executing " + " ".join(cmd) + ".")  # noqa: T001
+    print("Executing " + " ".join(cmd) + ".")  # noqa: T201
     subprocess.run(cmd, check=True)
 
 
