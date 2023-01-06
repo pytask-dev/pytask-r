@@ -6,26 +6,13 @@ import pytest
 from pytask import Mark
 from pytask_r.collect import _parse_r_mark
 from pytask_r.collect import r
-from pytask_r.serialization import SERIALIZER
+from pytask_r.serialization import SERIALIZERS
 
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
     "args, kwargs, expectation, expected",
     [
-        ((), {}, pytest.raises(RuntimeError, match="The old syntax"), None),
-        (
-            ("-o"),
-            {"script": "script.r"},
-            pytest.raises(RuntimeError, match="The old syntax"),
-            None,
-        ),
-        (
-            (),
-            {"options": ("-o")},
-            pytest.raises(RuntimeError, match="The old syntax"),
-            None,
-        ),
         (
             (),
             {
@@ -60,31 +47,6 @@ def test_r(args, kwargs, expectation, expected):
 @pytest.mark.parametrize(
     "mark, default_options, default_serializer, default_suffix, expectation, expected",
     [
-        (
-            Mark("r", (), {}),
-            [],
-            None,
-            ".json",
-            pytest.raises(RuntimeError, match="The old syntax for @pytask.mark.r"),
-            Mark(
-                "r",
-                (),
-                {
-                    "script": None,
-                    "options": [],
-                    "serializer": None,
-                    "suffix": ".json",
-                },
-            ),
-        ),
-        (
-            Mark("r", ("-o"), {}),
-            [],
-            None,
-            ".json",
-            pytest.raises(RuntimeError, match="The old syntax for @pytask.mark.r"),
-            None,
-        ),
         (
             Mark("r", (), {"script": "script.r"}),
             [],
@@ -122,7 +84,7 @@ def test_r(args, kwargs, expectation, expected):
                     "script": "script.r",
                     "options": [],
                     "serializer": "json",
-                    "suffix": SERIALIZER["json"]["suffix"],
+                    "suffix": SERIALIZERS["json"]["suffix"],
                 },
             ),
         ),

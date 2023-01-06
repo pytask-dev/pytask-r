@@ -14,7 +14,7 @@ from pytask import parse_nodes
 from pytask import produces
 from pytask import remove_marks
 from pytask import Task
-from pytask_r.serialization import SERIALIZER
+from pytask_r.serialization import SERIALIZERS
 from pytask_r.shared import r
 
 
@@ -101,9 +101,9 @@ def _parse_r_mark(mark, default_options, default_serializer, default_suffix):
 
     if (
         isinstance(parsed_kwargs["serializer"], str)
-        and parsed_kwargs["serializer"] in SERIALIZER
+        and parsed_kwargs["serializer"] in SERIALIZERS
     ):
-        proposed_suffix = SERIALIZER[parsed_kwargs["serializer"]]["suffix"]
+        proposed_suffix = SERIALIZERS[parsed_kwargs["serializer"]]["suffix"]
     else:
         proposed_suffix = default_suffix
     parsed_kwargs["suffix"] = suffix if suffix else proposed_suffix
