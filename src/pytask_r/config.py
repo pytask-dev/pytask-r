@@ -16,9 +16,7 @@ def pytask_parse_config(config):
             f"{list(SERIALIZERS)}."
         )
     config["r_suffix"] = config.get("r_suffix", "")
-    config["r_options"] = _parse_value_or_whitespace_option(
-        config.get("r_options")
-    )
+    config["r_options"] = _parse_value_or_whitespace_option(config.get("r_options"))
 
 
 def _parse_value_or_whitespace_option(value: str | None) -> None | str | list[str]:
