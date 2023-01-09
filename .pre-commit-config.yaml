@@ -73,6 +73,7 @@ repos:
         additional_dependencies: [
             attrs>=21.3.0,
             click,
+            types-PyYAML,
             types-setuptools
         ]
         pass_filenames: false

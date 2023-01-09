@@ -1,3 +1,4 @@
+"""This module contains the main namespace of pytask-r."""
 from __future__ import annotations
 
 try:

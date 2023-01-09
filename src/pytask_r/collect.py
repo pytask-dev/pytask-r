@@ -5,6 +5,7 @@ import functools
 import subprocess
 from pathlib import Path
 from types import FunctionType
+from typing import Any
 
 from pytask import depends_on
 from pytask import has_mark
@@ -13,6 +14,7 @@ from pytask import Mark
 from pytask import parse_nodes
 from pytask import produces
 from pytask import remove_marks
+from pytask import Session
 from pytask import Task
 from pytask_r.serialization import SERIALIZERS
 from pytask_r.shared import r
@@ -26,7 +28,9 @@ def run_r_script(script: Path, options: list[str], serialized: Path) -> None:
 
 
 @hookimpl
-def pytask_collect_task(session, path, name, obj):
+def pytask_collect_task(
+    session: Session, path: Path, name: str, obj: Any
+) -> Task | None:
     """Perform some checks."""
     __tracebackhide__ = True
 
@@ -62,7 +66,7 @@ def pytask_collect_task(session, path, name, obj):
         task = Task(
             base_name=name,
             path=path,
-            function=_copy_func(run_r_script),
+            function=_copy_func(run_r_script),  # type: ignore[arg-type]
             depends_on=dependencies,
             produces=products,
             markers=markers,
@@ -85,28 +89,33 @@ def pytask_collect_task(session, path, name, obj):
         )
 
         return task
+    return None
 
 
-def _parse_r_mark(mark, default_options, default_serializer, default_suffix):
+def _parse_r_mark(
+    mark: Mark,
+    default_options: list[str] | None,
+    default_serializer: str,
+    default_suffix: str,
+) -> Mark:
     """Parse a Julia mark."""
     script, options, serializer, suffix = r(**mark.kwargs)
 
     parsed_kwargs = {}
-    for arg_name, value, default in [
+    for arg_name, value, default in (
         ("script", script, None),
         ("options", options, default_options),
         ("serializer", serializer, default_serializer),
-    ]:
-        parsed_kwargs[arg_name] = value if value else default
-
-    if (
-        isinstance(parsed_kwargs["serializer"], str)
-        and parsed_kwargs["serializer"] in SERIALIZERS
     ):
-        proposed_suffix = SERIALIZERS[parsed_kwargs["serializer"]]["suffix"]
-    else:
-        proposed_suffix = default_suffix
-    parsed_kwargs["suffix"] = suffix if suffix else proposed_suffix
+        parsed_kwargs[arg_name] = value or default
+
+    proposed_suffix = (
+        SERIALIZERS[parsed_kwargs["serializer"]]["suffix"]
+        if isinstance(parsed_kwargs["serializer"], str)
+        and parsed_kwargs["serializer"] in SERIALIZERS
+        else default_suffix
+    )
+    parsed_kwargs["suffix"] = suffix or proposed_suffix  # type: ignore[assignment]
 
     mark = Mark("r", (), parsed_kwargs)
     return mark
