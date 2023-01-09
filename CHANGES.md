@@ -5,9 +5,14 @@ chronological order. Releases follow [semantic versioning](https://semver.org/) 
 releases are available on [PyPI](https://pypi.org/project/pytask-r) and
 [Anaconda.org](https://anaconda.org/conda-forge/pytask-r).
 
-## 0.2.0 - 2022-xx-xx
+## 0.3.0 - 2023-xx-xx
+
+- {pull}`33` deprecates INI configurations and aligns the plugin with pytask v0.3.
+
+## 0.2.0 - 2022-04-16
 
 - {pull}`24` removes an unnecessary hook implementation.
+- {pull}`26` implements the new interface for v0.2.
 
 ## 0.1.1 - 2022-02-08
 

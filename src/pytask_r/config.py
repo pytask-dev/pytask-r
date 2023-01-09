@@ -2,26 +2,28 @@
 from __future__ import annotations
 
 from pytask import hookimpl
+from pytask_r.serialization import SERIALIZERS
 
 
 @hookimpl
-def pytask_parse_config(config, config_from_file):
+def pytask_parse_config(config):
     """Register the r marker."""
     config["markers"]["r"] = "Tasks which are executed with Rscript."
-    config["r_serializer"] = config_from_file.get("r_serializer", "json")
-    config["r_suffix"] = config_from_file.get("r_suffix", "")
-    config["r_options"] = _parse_value_or_whitespace_option(
-        config_from_file.get("r_options")
-    )
+    config["r_serializer"] = config.get("r_serializer", "json")
+    if config["r_serializer"] not in SERIALIZERS:
+        raise ValueError(
+            f"'r_serializer' is {config['r_serializer']} and not one of "
+            f"{list(SERIALIZERS)}."
+        )
+    config["r_suffix"] = config.get("r_suffix", "")
+    config["r_options"] = _parse_value_or_whitespace_option(config.get("r_options"))
 
 
 def _parse_value_or_whitespace_option(value: str | None) -> None | str | list[str]:
     """Parse option which can hold a single value or values separated by new lines."""
-    if value in ["none", "None", None, ""]:
+    if value is None:
         return None
     elif isinstance(value, list):
         return list(map(str, value))
-    elif isinstance(value, str):
-        return [v.strip() for v in value.split(" ") if v.strip()]
     else:
-        raise ValueError(f"Input {value!r} is neither a 'str' nor 'None'.")
+        raise ValueError(f"'r_options' is {value} and not a list.")

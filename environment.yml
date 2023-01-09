@@ -16,8 +16,8 @@ dependencies:
   - conda-verify
 
   # Package dependencies
-  - pytask >=0.2
-  - pytask-parallel >=0.2
+  - pytask >=0.3
+  - pytask-parallel >=0.3
 
   - r-base >4
   - r-jsonlite
