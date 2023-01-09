@@ -23,7 +23,7 @@ parametrize_parse_code_serializer_suffix = pytest.mark.parametrize(
 
 
 @needs_rscript
-@pytest.mark.end_to_end
+@pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_parametrized_execution_of_r_script_w_parametrize(
     runner, tmp_path, parse_config_code, serializer, suffix
@@ -54,10 +54,10 @@ def test_parametrized_execution_of_r_script_w_parametrize(
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
 
-    for name, content in [
+    for name, content in (
         ("script_1.r", "Cities breaking down on a camel's back"),
         ("script_2.r", "They just have to go 'cause they don't know whack"),
-    ]:
+    ):
         r_script = f"""
         {parse_config_code}
         file_descr <- file(config$produces)
@@ -74,7 +74,7 @@ def test_parametrized_execution_of_r_script_w_parametrize(
 
 
 @needs_rscript
-@pytest.mark.end_to_end
+@pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_parametrized_execution_of_r_script_w_loop(
     runner, tmp_path, parse_config_code, serializer, suffix
@@ -96,10 +96,10 @@ def test_parametrized_execution_of_r_script_w_loop(
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
 
-    for name, content in [
+    for name, content in (
         ("script_1.r", "Cities breaking down on a camel's back"),
         ("script_2.r", "They just have to go 'cause they don't know whack"),
-    ]:
+    ):
         r_script = f"""
         {parse_config_code}
         file_descr <- file(config$produces)
@@ -116,7 +116,7 @@ def test_parametrized_execution_of_r_script_w_loop(
 
 
 @needs_rscript
-@pytest.mark.end_to_end
+@pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_parametrize_r_options_and_product_paths_w_parametrize(
     runner, tmp_path, parse_config_code, serializer, suffix
@@ -149,7 +149,7 @@ def test_parametrize_r_options_and_product_paths_w_parametrize(
 
 
 @needs_rscript
-@pytest.mark.end_to_end
+@pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_parametrize_r_options_and_product_paths_w_loop(
     runner, tmp_path, parse_config_code, serializer, suffix

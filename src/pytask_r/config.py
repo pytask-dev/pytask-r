@@ -1,12 +1,14 @@
 """Configure pytask."""
 from __future__ import annotations
 
+from typing import Any
+
 from pytask import hookimpl
 from pytask_r.serialization import SERIALIZERS
 
 
 @hookimpl
-def pytask_parse_config(config):
+def pytask_parse_config(config: dict[str, Any]) -> None:
     """Register the r marker."""
     config["markers"]["r"] = "Tasks which are executed with Rscript."
     config["r_serializer"] = config.get("r_serializer", "json")
@@ -23,7 +25,6 @@ def _parse_value_or_whitespace_option(value: str | None) -> None | str | list[st
     """Parse option which can hold a single value or values separated by new lines."""
     if value is None:
         return None
-    elif isinstance(value, list):
+    if isinstance(value, list):
         return list(map(str, value))
-    else:
-        raise ValueError(f"'r_options' is {value} and not a list.")
+    raise ValueError(f"'r_options' is {value} and not a list.")

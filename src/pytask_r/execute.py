@@ -15,7 +15,7 @@ from pytask_r.shared import r
 
 
 @hookimpl
-def pytask_execute_task_setup(task):
+def pytask_execute_task_setup(task: Task) -> None:
     """Perform some checks when a task marked with the r marker is executed."""
     marks = get_marks(task, "r")
     if marks:

@@ -8,6 +8,7 @@ releases are available on [PyPI](https://pypi.org/project/pytask-r) and
 ## 0.3.0 - 2023-xx-xx
 
 - {pull}`33` deprecates INI configurations and aligns the plugin with pytask v0.3.
+- {pull}`34` adds mypy, ruff and refurb.
 
 ## 0.2.0 - 2022-04-16
 

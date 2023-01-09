@@ -1,6 +1,8 @@
+"""This module contains shared functions."""
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 from typing import Callable
 from typing import Iterable
 from typing import Sequence
@@ -39,16 +41,8 @@ def r(
     return script, options, serializer, suffix
 
 
-def _to_list(scalar_or_iter):
+def _to_list(scalar_or_iter: Any) -> list[Any]:
     """Convert scalars and iterables to list.
-
-    Parameters
-    ----------
-    scalar_or_iter : str or list
-
-    Returns
-    -------
-    list
 
     Examples
     --------

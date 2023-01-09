@@ -9,9 +9,9 @@ from pytask_r.collect import r
 from pytask_r.serialization import SERIALIZERS
 
 
-@pytest.mark.unit
+@pytest.mark.unit()
 @pytest.mark.parametrize(
-    "args, kwargs, expectation, expected",
+    ("args", "kwargs", "expectation", "expected"),
     [
         (
             (),
@@ -43,9 +43,16 @@ def test_r(args, kwargs, expectation, expected):
         assert result == expected
 
 
-@pytest.mark.unit
+@pytest.mark.unit()
 @pytest.mark.parametrize(
-    "mark, default_options, default_serializer, default_suffix, expectation, expected",
+    (
+        "mark",
+        "default_options",
+        "default_serializer",
+        "default_suffix",
+        "expectation",
+        "expected",
+    ),
     [
         (
             Mark("r", (), {"script": "script.r"}),

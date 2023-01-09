@@ -50,14 +50,17 @@ def create_file_name(task: Task, suffix: str) -> str:
 
 
 def serialize_keyword_arguments(
-    serializer: str | Callable[dict[str, Any], str],
+    serializer: str | Callable[..., str],
     path_to_serialized: Path,
     kwargs: dict[str, Any],
 ) -> None:
+    """Serialize keyword arguments."""
     if callable(serializer):
         serializer_func = serializer
     elif isinstance(serializer, str) and serializer in SERIALIZERS:
-        serializer_func = SERIALIZERS[serializer]["serializer"]
+        serializer_func = SERIALIZERS[serializer][
+            "serializer"
+        ]  # type: ignore[assignment]
     else:
         raise ValueError(f"Serializer {serializer!r} is not known.")
 
