@@ -9,7 +9,7 @@ from typing import Sequence
 
 
 def r(
-    script: str | Path = None,
+    script: str | Path,
     options: str | Iterable[str] | None = None,
     serializer: str | Callable[..., str] | str | None = None,
     suffix: str | None = None,
@@ -23,7 +23,7 @@ def r(
 
     Parameters
     ----------
-    script : Union[str, Path]
+    script : str | Path
         The path to the R script which is executed.
     options : str | Iterable[str]
         One or multiple command line options passed to Rscript.

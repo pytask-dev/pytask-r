@@ -21,7 +21,7 @@ def pytask_parse_config(config: dict[str, Any]) -> None:
     config["r_options"] = _parse_value_or_whitespace_option(config.get("r_options"))
 
 
-def _parse_value_or_whitespace_option(value: str | None) -> None | str | list[str]:
+def _parse_value_or_whitespace_option(value: Any) -> list[str] | None:
     """Parse option which can hold a single value or values separated by new lines."""
     if value is None:
         return None
