@@ -19,7 +19,7 @@ else:
 
 
 pytestmark = pytest.mark.skipif(
-    not _IS_PYTASK_PARALLEL_INSTALLED, reason="Tests require pytask-parallel."
+    not _IS_PYTASK_PARALLEL_INSTALLED, reason="Tests require pytask-parallel.",
 )
 
 
@@ -31,7 +31,7 @@ parametrize_parse_code_serializer_suffix = pytest.mark.parametrize(
             "config <- read_json(args[length(args)])",
             "json",
             ".json",
-        )
+        ),
     ],
 )
 
@@ -40,7 +40,7 @@ parametrize_parse_code_serializer_suffix = pytest.mark.parametrize(
 @pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_parallel_parametrization_over_source_files_w_parametrize(
-    runner, tmp_path, parse_config_code, serializer, suffix
+    runner, tmp_path, parse_config_code, serializer, suffix,
 ):
     """Test parallelization over source files.
 
@@ -110,7 +110,7 @@ def test_parallel_parametrization_over_source_files_w_parametrize(
 @pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_parallel_parametrization_over_source_files_w_loop(
-    runner, tmp_path, parse_config_code, serializer, suffix
+    runner, tmp_path, parse_config_code, serializer, suffix,
 ):
     """Test parallelization over source files.
 
@@ -168,7 +168,7 @@ def test_parallel_parametrization_over_source_files_w_loop(
 @pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_parallel_parametrization_over_source_file_w_parametrize(
-    runner, tmp_path, parse_config_code, serializer, suffix
+    runner, tmp_path, parse_config_code, serializer, suffix,
 ):
     """Test parallelization over the same source file.
 
@@ -216,7 +216,7 @@ def test_parallel_parametrization_over_source_file_w_parametrize(
 @pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_parallel_parametrization_over_source_file_w_loop(
-    runner, tmp_path, parse_config_code, serializer, suffix
+    runner, tmp_path, parse_config_code, serializer, suffix,
 ):
     """Test parallelization over the same source file.
 

@@ -37,7 +37,7 @@ def test_pytask_execute_task_setup(monkeypatch):
 @parametrize_parse_code_serializer_suffix
 @pytest.mark.parametrize("depends_on", ["'in_1.txt'", "['in_1.txt', 'in_2.txt']"])
 def test_run_r_script(
-    runner, tmp_path, parse_config_code, serializer, suffix, depends_on
+    runner, tmp_path, parse_config_code, serializer, suffix, depends_on,
 ):
     task_source = f"""
     import pytask
@@ -74,7 +74,7 @@ def test_run_r_script(
 @pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_run_r_script_w_task_decorator(
-    runner, tmp_path, parse_config_code, serializer, suffix
+    runner, tmp_path, parse_config_code, serializer, suffix,
 ):
     task_source = f"""
     import pytask
@@ -106,7 +106,7 @@ def test_run_r_script_w_task_decorator(
 @pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_raise_error_if_rscript_is_not_found(
-    tmp_path, monkeypatch, parse_config_code, serializer, suffix
+    tmp_path, monkeypatch, parse_config_code, serializer, suffix,
 ):
     task_source = f"""
     import pytask
@@ -139,7 +139,7 @@ def test_raise_error_if_rscript_is_not_found(
 @pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_run_r_script_w_saving_workspace(
-    runner, tmp_path, parse_config_code, serializer, suffix
+    runner, tmp_path, parse_config_code, serializer, suffix,
 ):
     """Save workspace while executing the script."""
     task_source = f"""
@@ -175,7 +175,7 @@ def test_run_r_script_w_saving_workspace(
 @pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_run_r_script_w_wrong_cmd_option(
-    runner, tmp_path, parse_config_code, serializer, suffix
+    runner, tmp_path, parse_config_code, serializer, suffix,
 ):
     """Save workspace while executing the script."""
     task_source = f"""

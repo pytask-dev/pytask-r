@@ -15,7 +15,7 @@ def pytask_parse_config(config: dict[str, Any]) -> None:
     if config["r_serializer"] not in SERIALIZERS:
         raise ValueError(
             f"'r_serializer' is {config['r_serializer']} and not one of "
-            f"{list(SERIALIZERS)}."
+            f"{list(SERIALIZERS)}.",
         )
     config["r_suffix"] = config.get("r_suffix", "")
     config["r_options"] = _parse_value_or_whitespace_option(config.get("r_options"))

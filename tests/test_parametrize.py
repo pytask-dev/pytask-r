@@ -17,7 +17,7 @@ parametrize_parse_code_serializer_suffix = pytest.mark.parametrize(
             "config <- read_json(args[length(args)])",
             "json",
             ".json",
-        )
+        ),
     ],
 )
 
@@ -26,7 +26,7 @@ parametrize_parse_code_serializer_suffix = pytest.mark.parametrize(
 @pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_parametrized_execution_of_r_script_w_parametrize(
-    runner, tmp_path, parse_config_code, serializer, suffix
+    runner, tmp_path, parse_config_code, serializer, suffix,
 ):
     task_source = f"""
     import pytask
@@ -77,7 +77,7 @@ def test_parametrized_execution_of_r_script_w_parametrize(
 @pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_parametrized_execution_of_r_script_w_loop(
-    runner, tmp_path, parse_config_code, serializer, suffix
+    runner, tmp_path, parse_config_code, serializer, suffix,
 ):
     task_source = f"""
     import pytask
@@ -119,7 +119,7 @@ def test_parametrized_execution_of_r_script_w_loop(
 @pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_parametrize_r_options_and_product_paths_w_parametrize(
-    runner, tmp_path, parse_config_code, serializer, suffix
+    runner, tmp_path, parse_config_code, serializer, suffix,
 ):
     task_source = f"""
     import pytask
@@ -152,7 +152,7 @@ def test_parametrize_r_options_and_product_paths_w_parametrize(
 @pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 def test_parametrize_r_options_and_product_paths_w_loop(
-    runner, tmp_path, parse_config_code, serializer, suffix
+    runner, tmp_path, parse_config_code, serializer, suffix,
 ):
     task_source = f"""
     import pytask

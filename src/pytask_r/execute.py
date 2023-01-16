@@ -21,7 +21,7 @@ def pytask_execute_task_setup(task: Task) -> None:
     if marks:
         if shutil.which("Rscript") is None:
             raise RuntimeError(
-                "Rscript is needed to run R scripts, but it is not found on your PATH."
+                "Rscript is needed to run R scripts, but it is not found on your PATH.",
             )
 
         assert len(marks) == 1
