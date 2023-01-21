@@ -9,6 +9,7 @@ from typing import Sequence
 
 
 def r(
+    *,
     script: str | Path,
     options: str | Iterable[str] | None = None,
     serializer: str | Callable[..., str] | str | None = None,
