@@ -256,4 +256,4 @@ def test_run_r_script_fails_w_multiple_markers(runner, tmp_path):
     result = runner.invoke(cli, [tmp_path.as_posix()])
 
     assert result.exit_code == ExitCode.COLLECTION_FAILED
-    assert "has multiple @pytask.mark.r marks" in result.output
+    assert "has multiple @pytask.mark.r marks" in result.output  # noqa: PLR2004

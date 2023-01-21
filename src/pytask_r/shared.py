@@ -8,6 +8,9 @@ from typing import Iterable
 from typing import Sequence
 
 
+R_SCRIPT_KEY = "__script"
+
+
 def r(
     *,
     script: str | Path,

@@ -12,6 +12,7 @@ from pytask import Task
 from pytask_r.serialization import create_path_to_serialized
 from pytask_r.serialization import serialize_keyword_arguments
 from pytask_r.shared import r
+from pytask_r.shared import R_SCRIPT_KEY
 
 
 @hookimpl
@@ -44,13 +45,16 @@ def collect_keyword_arguments(task: Task) -> dict[str, Any]:
     kwargs = dict(task.kwargs)
     task.kwargs = {}
 
-    if len(task.depends_on) == 1 and "__script" in task.depends_on:
+    if len(task.depends_on) == 1 and R_SCRIPT_KEY in task.depends_on:
         pass
-    elif not task.attributes["r_keep_dict"] and len(task.depends_on) == 2:
+    elif (
+        not task.attributes["r_keep_dict"]
+        and len(task.depends_on) == 2  # noqa: PLR2004
+    ):
         kwargs["depends_on"] = str(task.depends_on[0].value)
     else:
         kwargs["depends_on"] = tree_map(lambda x: str(x.value), task.depends_on)
-        kwargs["depends_on"].pop("__script")
+        kwargs["depends_on"].pop(R_SCRIPT_KEY)
 
     if task.produces:
         kwargs["produces"] = tree_map(lambda x: str(x.value), task.produces)
