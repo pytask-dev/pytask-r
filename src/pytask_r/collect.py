@@ -18,6 +18,7 @@ from pytask import Session
 from pytask import Task
 from pytask_r.serialization import SERIALIZERS
 from pytask_r.shared import r
+from pytask_r.shared import R_SCRIPT_KEY
 
 
 def run_r_script(script: Path, options: list[str], serialized: Path) -> None:
@@ -29,7 +30,7 @@ def run_r_script(script: Path, options: list[str], serialized: Path) -> None:
 
 @hookimpl
 def pytask_collect_task(
-    session: Session, path: Path, name: str, obj: Any,
+    session: Session, path: Path, name: str, obj: Any
 ) -> Task | None:
     """Perform some checks."""
     __tracebackhide__ = True
@@ -44,7 +45,7 @@ def pytask_collect_task(
         if len(marks) > 1:
             raise ValueError(
                 f"Task {name!r} has multiple @pytask.mark.r marks, but only one is "
-                "allowed.",
+                "allowed."
             )
 
         mark = _parse_r_mark(
@@ -74,18 +75,18 @@ def pytask_collect_task(
         )
 
         script_node = session.hook.pytask_collect_node(
-            session=session, path=path, node=script,
+            session=session, path=path, node=script
         )
 
         if isinstance(task.depends_on, dict):
-            task.depends_on["__script"] = script_node
+            task.depends_on[R_SCRIPT_KEY] = script_node
             task.attributes["r_keep_dict"] = True
         else:
-            task.depends_on = {0: task.depends_on, "__script": script_node}
+            task.depends_on = {0: task.depends_on, R_SCRIPT_KEY: script_node}
             task.attributes["r_keep_dict"] = False
 
         task.function = functools.partial(
-            task.function, script=task.depends_on["__script"].path, options=options,
+            task.function, script=task.depends_on[R_SCRIPT_KEY].path, options=options
         )
 
         return task

@@ -8,3 +8,5 @@ exclude tox.ini
 
 include LICENSE
 include README.md
+
+recursive-include src py.typed
