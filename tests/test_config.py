@@ -8,4 +8,4 @@ from pytask import main
 def test_marker_is_configured(tmp_path):
     session = main({"paths": tmp_path})
 
-    assert "r" in session.config["markers"]  # noqa: PLR2004
+    assert "r" in session.config["markers"]
