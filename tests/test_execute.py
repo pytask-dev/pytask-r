@@ -36,7 +36,7 @@ def test_pytask_execute_task_setup(monkeypatch):
 @pytest.mark.end_to_end()
 @parametrize_parse_code_serializer_suffix
 @pytest.mark.parametrize("depends_on", ["'in_1.txt'", "['in_1.txt', 'in_2.txt']"])
-def test_run_r_script(
+def test_run_r_script(  # noqa: PLR0913
     runner, tmp_path, parse_config_code, serializer, suffix, depends_on
 ):
     task_source = f"""
