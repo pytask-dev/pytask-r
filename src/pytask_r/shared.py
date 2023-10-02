@@ -15,12 +15,12 @@ def r(
     *,
     script: str | Path,
     options: str | Iterable[str] | None = None,
-    serializer: str | Callable[..., str] | str | None = None,
+    serializer: str | Callable[..., str] | None = None,
     suffix: str | None = None,
 ) -> tuple[
     str | Path | None,
     str | Iterable[str] | None,
-    str | Callable[..., str] | str | None,
+    str | Callable[..., str] | None,
     str | None,
 ]:
     """Parse input to the ``@pytask.mark.r`` decorator.
