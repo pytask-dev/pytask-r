@@ -12,11 +12,6 @@ dependencies:
   - setuptools_scm
   - toml
 
-  # Conda
-  - anaconda-client
-  - conda-build
-  - conda-verify
-
   # Package dependencies
   - pytask >=0.4.0rc4
   - pytask-parallel >=0.4.0rc1

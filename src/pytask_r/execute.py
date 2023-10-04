@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import functools
+import inspect
 import shutil
 from typing import Any
 

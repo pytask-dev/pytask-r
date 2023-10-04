@@ -41,7 +41,7 @@ def test_parallel_parametrization_over_source_files_w_loop(
 
         @pytask.mark.task(kwargs={{"content": i}})
         @pytask.mark.r(
-            script="script_1.r",
+            script=f"script_{{i}}.r",
             serializer="{serializer}",
             suffix="{suffix}"
         )
@@ -92,6 +92,46 @@ def test_parallel_parametrization_over_source_file_w_loop(
         @pytask.mark.produces(f"{{i}}.rds")
         def execute_r_script():
             pass
+    """
+    tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(source))
+
+    r_script = f"""
+    {parse_config_code}
+    saveRDS(config$content, file=config$produces)
+    """
+    tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
+    result = runner.invoke(cli, [tmp_path.as_posix(), "-n", 2])
+    assert result.exit_code == ExitCode.OK
+
+
+@needs_rscript
+@pytest.mark.end_to_end()
+@parametrize_parse_code_serializer_suffix
+@pytest.mark.xfail(reason="@task does not support partialed functions.")
+def test_parallel_parametrization_over_source_file_w_loop_and_lambda(
+    runner, tmp_path, parse_config_code, serializer, suffix
+):
+    source = f"""
+    import pytask
+    import functools
+
+    for i in range(2):
+
+        pytask.mark.task(
+            kwargs={{"content": i}}
+        )(
+            pytask.mark.r(
+                script="script.r",
+                serializer="{serializer}",
+                suffix="{suffix}",
+            )(
+                pytask.mark.produces(f"{{i}}.rds")(
+                    functools.partial(
+                        lambda x: None, x=1
+                    )
+                )
+            )
+        )
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(source))
 
