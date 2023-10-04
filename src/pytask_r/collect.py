@@ -31,7 +31,7 @@ def run_r_script(
     """Run an R script."""
     cmd = ["Rscript", script.as_posix(), *options, str(serialized)]
     print("Executing " + " ".join(cmd) + ".")  # noqa: T201
-    subprocess.run(cmd, check=True)
+    subprocess.run(cmd, check=True)  # noqa: S603
 
 
 @hookimpl
