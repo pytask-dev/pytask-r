@@ -40,7 +40,7 @@ def create_file_name(task: Task, suffix: str) -> str:
 
     """
     return (
-        task.short_name.replace("[", "_")
+        getattr(task, "display_name", task.name).replace("[", "_")
         .replace("]", "_")
         .replace("::", "_")
         .replace(".", "_")
