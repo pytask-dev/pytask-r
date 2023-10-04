@@ -3,24 +3,31 @@ from __future__ import annotations
 
 import functools
 import subprocess
-from pathlib import Path
-from types import FunctionType
-from typing import Any
 import warnings
+from pathlib import Path
+from typing import Any
 
-from pytask import NodeInfo, PTask, PathNode, TaskWithoutPath, depends_on, is_task_function, parse_dependencies_from_task_function, parse_products_from_task_function
 from pytask import has_mark
 from pytask import hookimpl
+from pytask import is_task_function
 from pytask import Mark
+from pytask import NodeInfo
+from pytask import parse_dependencies_from_task_function
+from pytask import parse_products_from_task_function
+from pytask import PathNode
+from pytask import PTask
 from pytask import remove_marks
 from pytask import Session
 from pytask import Task
+from pytask import TaskWithoutPath
 from pytask_r.serialization import SERIALIZERS
 from pytask_r.shared import r
 from pytask_r.shared import R_SCRIPT_KEY
 
 
-def run_r_script(script: Path, options: list[str], serialized: Path, **kwargs: Any) -> None:
+def run_r_script(
+    script: Path, options: list[str], serialized: Path, **kwargs: Any  # noqa: ARG001
+) -> None:
     """Run an R script."""
     cmd = ["Rscript", script.as_posix(), *options, str(serialized)]
     print("Executing " + " ".join(cmd) + ".")  # noqa: T201
@@ -82,7 +89,6 @@ def pytask_collect_task(
                 f"to Julia file with the .r suffix, but it is {script_node}."
             )
 
-
         dependencies = parse_dependencies_from_task_function(
             session, path, name, path_nodes, obj
         )
@@ -96,9 +102,7 @@ def pytask_collect_task(
         markers = obj.pytask_meta.markers if hasattr(obj, "pytask_meta") else []
 
         task_function = functools.partial(
-            run_r_script,
-            script=script_node.path,
-            options=options
+            run_r_script, script=script_node.path, options=options
         )
 
         if path is None:

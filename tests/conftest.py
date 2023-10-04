@@ -1,12 +1,12 @@
 from __future__ import annotations
-from contextlib import contextmanager
 
 import shutil
+import sys
+from contextlib import contextmanager
+from typing import Callable
 
 import pytest
 from click.testing import CliRunner
-from typing import Callable
-import sys
 
 
 needs_rscript = pytest.mark.skipif(

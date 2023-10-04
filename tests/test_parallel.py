@@ -2,13 +2,13 @@
 from __future__ import annotations
 
 import textwrap
-import time
 
 import pytest
 from pytask import cli
 from pytask import ExitCode
 
-from tests.conftest import needs_rscript, parametrize_parse_code_serializer_suffix
+from tests.conftest import needs_rscript
+from tests.conftest import parametrize_parse_code_serializer_suffix
 
 try:
     import pytask_parallel  # noqa: F401
@@ -65,7 +65,6 @@ def test_parallel_parametrization_over_source_files_w_loop(
 
     result = runner.invoke(cli, [tmp_path.as_posix(), "-n", 2])
     assert result.exit_code == ExitCode.OK
-
 
 
 @needs_rscript

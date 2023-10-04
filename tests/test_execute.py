@@ -4,9 +4,9 @@ import textwrap
 from pathlib import Path
 
 import pytest
+from pytask import build
 from pytask import cli
 from pytask import ExitCode
-from pytask import build
 from pytask import Mark
 from pytask import Task
 from pytask_r.execute import pytask_execute_task_setup

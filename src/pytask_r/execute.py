@@ -6,8 +6,9 @@ import shutil
 from typing import Any
 
 from pybaum.tree_util import tree_map
-from pytask import PPathNode, get_marks
+from pytask import get_marks
 from pytask import hookimpl
+from pytask import PPathNode
 from pytask import Task
 from pytask_r.serialization import create_path_to_serialized
 from pytask_r.serialization import serialize_keyword_arguments

@@ -6,10 +6,8 @@ import pytest
 from pytask import cli
 from pytask import ExitCode
 
-from tests.conftest import needs_rscript, parametrize_parse_code_serializer_suffix
-
-
-
+from tests.conftest import needs_rscript
+from tests.conftest import parametrize_parse_code_serializer_suffix
 
 
 @needs_rscript
