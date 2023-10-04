@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 from typing import Callable
 
-from pytask import Task
+from pytask import PTask, PTaskWithPath, Task
 
 
 _HIDDEN_FOLDER = ".pytask"
@@ -24,15 +24,15 @@ else:
     SERIALIZERS["yml"] = {"serializer": yaml.dump, "suffix": ".yml"}
 
 
-def create_path_to_serialized(task: Task, suffix: str) -> Path:
+def create_path_to_serialized(task: PTask, suffix: str) -> Path:
     """Create path to serialized."""
-    parent = task.path.parent
+    parent = task.path.parent if isinstance(task, PTaskWithPath) else Path.cwd()
     file_name = create_file_name(task, suffix)
     path = parent.joinpath(_HIDDEN_FOLDER, file_name).with_suffix(suffix)
     return path
 
 
-def create_file_name(task: Task, suffix: str) -> str:
+def create_file_name(task: PTask, suffix: str) -> str:
     """Create the file name of the file containing the serialized kwargs.
 
     Some characters need to be escaped since they are not valid characters on file

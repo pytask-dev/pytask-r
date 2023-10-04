@@ -105,6 +105,7 @@ def pytask_collect_task(
             run_r_script, script=script_node.path, options=options
         )
 
+        task: PTask
         if path is None:
             task = TaskWithoutPath(
                 name=name,
