@@ -6,7 +6,8 @@ from pathlib import Path
 from typing import Any
 from typing import Callable
 
-from pytask import PTask, PTaskWithPath, Task
+from pytask import PTask
+from pytask import PTaskWithPath
 
 
 _HIDDEN_FOLDER = ".pytask"

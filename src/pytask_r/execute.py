@@ -5,11 +5,11 @@ import functools
 import shutil
 from typing import Any
 
-from pytask.tree_util import tree_map
-from pytask import PTask, get_marks
+from pytask import get_marks
 from pytask import hookimpl
 from pytask import PPathNode
-from pytask import Task
+from pytask import PTask
+from pytask.tree_util import tree_map
 from pytask_r.serialization import create_path_to_serialized
 from pytask_r.serialization import serialize_keyword_arguments
 from pytask_r.shared import r

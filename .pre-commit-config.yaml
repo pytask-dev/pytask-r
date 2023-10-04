@@ -61,13 +61,11 @@ repos:
     rev: 'v1.5.1'
     hooks:
     -   id: mypy
-        args: [
-            --no-strict-optional,
-            --ignore-missing-imports,
-        ]
         additional_dependencies: [
             attrs>=21.3.0,
             click,
+            optree,
+            pytask>=0.4.0rc4,
             types-PyYAML,
             types-setuptools
         ]
