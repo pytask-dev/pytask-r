@@ -10,7 +10,7 @@ from pytask import PTask
 from pytask import PTaskWithPath
 
 
-_HIDDEN_FOLDER = ".pytask"
+_HIDDEN_FOLDER = ".pytask/pytask-r"
 
 
 SERIALIZERS = {"json": {"serializer": json.dumps, "suffix": ".json"}}
