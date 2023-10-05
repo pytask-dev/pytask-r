@@ -93,6 +93,18 @@ def pytask_collect_task(
                 f"to Julia file with the .r suffix, but it is {script_node}."
             )
 
+        options_node = session.hook.pytask_collect_node(
+            session=session,
+            path=path_nodes,
+            node_info=NodeInfo(
+                arg_name="_options",
+                path=(),
+                value=options,
+                task_path=path,
+                task_name=name,
+            ),
+        )
+
         dependencies = parse_dependencies_from_task_function(
             session, path, name, path_nodes, obj
         )
@@ -102,7 +114,7 @@ def pytask_collect_task(
 
         # Add script
         dependencies["_script"] = script_node
-        dependencies["_options"] = PythonNode(value=options)
+        dependencies["_options"] = options_node
 
         markers = obj.pytask_meta.markers if hasattr(obj, "pytask_meta") else []
 
@@ -125,9 +137,21 @@ def pytask_collect_task(
                 markers=markers,
             )
 
-        task.depends_on["_serialized"] = PythonNode(  # type: ignore[assignment]
-            value=create_path_to_serialized(task, suffix)  # type: ignore[arg-type]
+        # Add serialized node that depends on the task id.
+        serialized = create_path_to_serialized(task, suffix)  # type: ignore[arg-type]
+        serialized_node = session.hook.pytask_collect_node(
+            session=session,
+            path=path_nodes,
+            node_info=NodeInfo(
+                arg_name="_serialized",
+                path=(),
+                value=PythonNode(value=serialized),
+                task_path=path,
+                task_name=name,
+            ),
         )
+        task.depends_on["_serialized"] = serialized_node
+
         return task
     return None
 
