@@ -41,8 +41,7 @@ def create_file_name(task: PTask, suffix: str) -> str:
 
     """
     return (
-        getattr(task, "display_name", task.name)
-        .replace("[", "_")
+        task.name.replace("[", "_")
         .replace("]", "_")
         .replace("::", "_")
         .replace(".", "_")

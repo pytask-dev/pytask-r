@@ -1,7 +1,6 @@
 """Collect tasks."""
 from __future__ import annotations
 
-import functools
 import subprocess
 import warnings
 from pathlib import Path
@@ -16,20 +15,21 @@ from pytask import parse_dependencies_from_task_function
 from pytask import parse_products_from_task_function
 from pytask import PathNode
 from pytask import PTask
+from pytask import PythonNode
 from pytask import remove_marks
 from pytask import Session
 from pytask import Task
 from pytask import TaskWithoutPath
+from pytask_r.serialization import create_path_to_serialized
 from pytask_r.serialization import SERIALIZERS
 from pytask_r.shared import r
-from pytask_r.shared import R_SCRIPT_KEY
 
 
 def run_r_script(
-    script: Path, options: list[str], serialized: Path, **kwargs: Any  # noqa: ARG001
+    _script: Path, _options: list[str], _serialized: Path, **kwargs: Any  # noqa: ARG001
 ) -> None:
     """Run an R script."""
-    cmd = ["Rscript", script.as_posix(), *options, str(serialized)]
+    cmd = ["Rscript", _script.as_posix(), *_options, str(_serialized)]
     print("Executing " + " ".join(cmd) + ".")  # noqa: T201
     subprocess.run(cmd, check=True)  # noqa: S603
 
@@ -60,7 +60,7 @@ def pytask_collect_task(
             default_serializer=session.config["r_serializer"],
             default_suffix=session.config["r_suffix"],
         )
-        script, options, _, _ = r(**marks[0].kwargs)
+        script, options, _, suffix = r(**marks[0].kwargs)
 
         obj.pytask_meta.markers.append(mark)
 
@@ -79,7 +79,11 @@ def pytask_collect_task(
             session=session,
             path=path_nodes,
             node_info=NodeInfo(
-                arg_name="script", path=(), value=script, task_path=path, task_name=name
+                arg_name="_script",
+                path=(),
+                value=script,
+                task_path=path,
+                task_name=name,
             ),
         )
 
@@ -97,19 +101,16 @@ def pytask_collect_task(
         )
 
         # Add script
-        dependencies[R_SCRIPT_KEY] = script_node
+        dependencies["_script"] = script_node
+        dependencies["_options"] = PythonNode(value=options)
 
         markers = obj.pytask_meta.markers if hasattr(obj, "pytask_meta") else []
-
-        task_function = functools.partial(
-            run_r_script, script=script_node.path, options=options
-        )
 
         task: PTask
         if path is None:
             task = TaskWithoutPath(
                 name=name,
-                function=task_function,
+                function=run_r_script,
                 depends_on=dependencies,
                 produces=products,
                 markers=markers,
@@ -118,12 +119,15 @@ def pytask_collect_task(
             task = Task(
                 base_name=name,
                 path=path,
-                function=task_function,
+                function=run_r_script,
                 depends_on=dependencies,
                 produces=products,
                 markers=markers,
             )
 
+        task.depends_on["_serialized"] = PythonNode(  # type: ignore[assignment]
+            value=create_path_to_serialized(task, suffix)  # type: ignore[arg-type]
+        )
         return task
     return None
 
