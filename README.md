@@ -96,11 +96,10 @@ The `.json` file is stored in the same folder as the task in a `.pytask` directo
 To parse the JSON file, you need to install
 [jsonlite](https://github.com/jeroen/jsonlite).
 
-You can also pass any other information to your script by using the `@pytask.mark.task`
-decorator.
+You can also pass any other information to your script by using the `@task` decorator.
 
 ```python
-@pytask.mark.task(kwargs={"number": 1})
+@task(kwargs={"number": 1})
 @pytask.mark.r(script="script.r")
 @pytask.mark.produces("out.rds")
 def task_run_r_script():
@@ -146,7 +145,7 @@ different outputs.
 ```python
 for i in range(2):
 
-    @pytask.mark.task
+    @task
     @pytask.mark.r(script=f"script_{i}.r")
     @pytask.mark.produces(f"out_{i}.csv")
     def task_execute_r_script():
@@ -154,12 +153,12 @@ for i in range(2):
 ```
 
 If you want to pass different inputs to the same R script, pass these arguments with the
-`kwargs` keyword of the `@pytask.mark.task` decorator.
+`kwargs` keyword of the `@task` decorator.
 
 ```python
 for i in range(2):
 
-    @pytask.mark.task(kwargs={"i": i})
+    @task(kwargs={"i": i})
     @pytask.mark.r(script="script.r")
     @pytask.mark.produces(f"output_{i}.csv")
     def task_execute_r_script():
