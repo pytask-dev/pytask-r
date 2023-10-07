@@ -2,6 +2,8 @@ name: pytask-r
 
 channels:
   - conda-forge
+  - conda-forge/label/pytask_rc
+  - conda-forge/label/pytask_parallel_rc
   - nodefaults
 
 dependencies:
@@ -10,14 +12,9 @@ dependencies:
   - setuptools_scm
   - toml
 
-  # Conda
-  - anaconda-client
-  - conda-build
-  - conda-verify
-
   # Package dependencies
-  - pytask >=0.3
-  - pytask-parallel >=0.3
+  - pytask >=0.4.0
+  - pytask-parallel >=0.4.0
 
   - r-base >4
   - r-jsonlite

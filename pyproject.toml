@@ -25,7 +25,7 @@ ignore_errors = true
 
 
 [tool.ruff]
-target-version = "py37"
+target-version = "py38"
 select = ["ALL"]
 fix = true
 extend-ignore = [
@@ -67,7 +67,7 @@ convention = "numpy"
 
 [tool.pytest.ini_options]
 # Do not add src since it messes with the loading of pytask-parallel as a plugin.
-testpaths = ["test"]
+testpaths = ["tests"]
 markers = [
     "wip: Tests that are work-in-progress.",
     "unit: Flag for unit tests which target mainly a single function.",
