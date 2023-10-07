@@ -5,6 +5,10 @@ chronological order. Releases follow [semantic versioning](https://semver.org/) 
 releases are available on [PyPI](https://pypi.org/project/pytask-r) and
 [Anaconda.org](https://anaconda.org/conda-forge/pytask-r).
 
+## 0.4.0 - 2023-10-08
+
+- {pull}`42` makes the package compatible with pytask v0.4.0.
+
 ## 0.3.0 - 2023-xx-xx
 
 - {pull}`33` deprecates INI configurations and aligns the plugin with pytask v0.3.
