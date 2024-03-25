@@ -1,4 +1,5 @@
 """This module contains the code to serialize keyword arguments to the task."""
+
 from __future__ import annotations
 
 import json

@@ -190,8 +190,7 @@ Use the `serializer` keyword arguments of the `@pytask.mark.r` decorator with
 
 ```python
 @pytask.mark.r(script="script.r", serializer="yaml")
-def task_example():
-    ...
+def task_example(): ...
 ```
 
 And in your R script use
@@ -214,8 +213,7 @@ import json
 
 
 @pytask.mark.r(script="script.r", serializer=json.dumps, suffix=".json")
-def task_example():
-    ...
+def task_example(): ...
 ```
 
 ### Configuration
