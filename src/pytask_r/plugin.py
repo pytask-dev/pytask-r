@@ -1,4 +1,5 @@
 """Register hook specifications and implementations."""
+
 from __future__ import annotations
 
 from pluggy import PluginManager
