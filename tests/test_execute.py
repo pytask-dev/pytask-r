@@ -4,11 +4,11 @@ import textwrap
 from pathlib import Path
 
 import pytest
-from pytask import build
-from pytask import cli
 from pytask import ExitCode
 from pytask import Mark
 from pytask import Task
+from pytask import build
+from pytask import cli
 from pytask_r.execute import pytask_execute_task_setup
 
 from tests.conftest import needs_rscript

@@ -1,11 +1,12 @@
 """Contains tests which do not require the plugin and ensure normal execution."""
+
 from __future__ import annotations
 
 import textwrap
 
 import pytest
-from pytask import cli
 from pytask import ExitCode
+from pytask import cli
 
 
 @pytest.mark.end_to_end()
