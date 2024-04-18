@@ -34,6 +34,9 @@ Tracker = "https://github.com/pytask-dev/pytask-r/issues"
 [project.entry-points.pytask]
 pytask_r = "pytask_r.plugin"
 
+[project.optional-dependencies]
+test = ["pytask-parallel", "pytest", "pytest-cov", "pytest-xdist", "pyyaml"]
+
 [tool.rye]
 managed = true
 
@@ -80,11 +83,11 @@ unsafe-fixes = true
 
 [tool.ruff.lint]
 extend-ignore = [
-    "ANN101",  # type annotating self
-    "ANN102",  # type annotating cls
+    "ANN101", # type annotating self
+    "ANN102", # type annotating cls
     "ANN401",
-    "COM812",  # Comply with ruff-format
-    "ISC001",  # Comply with ruff-format
+    "COM812", # Comply with ruff-format
+    "ISC001", # Comply with ruff-format
 ]
 select = ["ALL"]
 
