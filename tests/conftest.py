@@ -4,9 +4,10 @@ import shutil
 import sys
 from contextlib import contextmanager
 from typing import Callable
-from pytask import storage
+
 import pytest
 from click.testing import CliRunner
+from pytask import storage
 
 needs_rscript = pytest.mark.skipif(
     shutil.which("Rscript") is None, reason="R with Rscript needs to be installed."
