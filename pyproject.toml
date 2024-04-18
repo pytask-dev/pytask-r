@@ -1,10 +1,62 @@
+[project]
+name = "pytask_r"
+description = "Run R scripts with pytask."
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: R",
+]
+requires-python = ">=3.8"
+dependencies = ["click", "pluggy>=1.0.0", "pytask>=0.4.0"]
+dynamic = ["version"]
+
+[[project.authors]]
+name = "Tobias Raabe"
+email = "raabe@posteo.de"
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.license]
+text = "MIT"
+
+[project.urls]
+Homepage = "https://github.com/pytask-dev/pytask-r"
+Changelog = "https://github.com/pytask-dev/pytask-r/blob/main/CHANGES.md"
+Documentation = "https://github.com/pytask-dev/pytask-r"
+Github = "https://github.com/pytask-dev/pytask-r"
+Tracker = "https://github.com/pytask-dev/pytask-r/issues"
+
+[project.entry-points.pytask]
+pytask_r = "pytask_r.plugin"
+
+[tool.rye]
+managed = true
+
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.0"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
+[tool.hatch.build.hooks.vcs]
+version-file = "src/pytask_r/_version.py"
 
-[tool.setuptools_scm]
-write_to = "src/pytask_r/_version.py"
+[tool.hatch.build.targets.sdist]
+exclude = ["tests"]
+only-packages = true
+
+[tool.hatch.build.targets.wheel]
+exclude = ["tests"]
+only-packages = true
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 
 [tool.mypy]
@@ -42,18 +94,18 @@ extend-ignore = [
     "D416",
     "D417",
     # Others.
-    "D404",  # Do not start module docstring with "This".
-    "RET504",  # unnecessary variable assignment before return.
-    "S101",  # raise errors for asserts.
-    "B905",  # strict parameter for zip that was implemented in py310.
-    "I",  # ignore isort
-    "ANN101",  # type annotating self
-    "ANN102",  # type annotating cls
-    "FBT",  # flake8-boolean-trap
-    "EM",  # flake8-errmsg
-    "ANN401",  # flake8-annotate typing.Any
-    "PD",  # pandas-vet
-    "COM812",  # trailing comma missing, but black takes care of that
+    "D404",   # Do not start module docstring with "This".
+    "RET504", # unnecessary variable assignment before return.
+    "S101",   # raise errors for asserts.
+    "B905",   # strict parameter for zip that was implemented in py310.
+    "I",      # ignore isort
+    "ANN101", # type annotating self
+    "ANN102", # type annotating cls
+    "FBT",    # flake8-boolean-trap
+    "EM",     # flake8-errmsg
+    "ANN401", # flake8-annotate typing.Any
+    "PD",     # pandas-vet
+    "COM812", # trailing comma missing, but black takes care of that
 ]
 
 
@@ -64,9 +116,8 @@ extend-ignore = [
 [tool.ruff.pydocstyle]
 convention = "numpy"
 
-
 [tool.pytest.ini_options]
-# Do not add src since it messes with the loading of pytask-parallel as a plugin.
+# Do not add src since it messes with the loading of pytask-r as a plugin.
 testpaths = ["tests"]
 markers = [
     "wip: Tests that are work-in-progress.",
