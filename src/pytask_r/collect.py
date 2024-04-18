@@ -1,4 +1,5 @@
 """Collect tasks."""
+
 from __future__ import annotations
 
 import subprocess
@@ -6,27 +7,31 @@ import warnings
 from pathlib import Path
 from typing import Any
 
-from pytask import has_mark
-from pytask import hookimpl
-from pytask import is_task_function
 from pytask import Mark
 from pytask import NodeInfo
-from pytask import parse_dependencies_from_task_function
-from pytask import parse_products_from_task_function
 from pytask import PathNode
 from pytask import PTask
 from pytask import PythonNode
-from pytask import remove_marks
 from pytask import Session
 from pytask import Task
 from pytask import TaskWithoutPath
-from pytask_r.serialization import create_path_to_serialized
+from pytask import has_mark
+from pytask import hookimpl
+from pytask import is_task_function
+from pytask import parse_dependencies_from_task_function
+from pytask import parse_products_from_task_function
+from pytask import remove_marks
+
 from pytask_r.serialization import SERIALIZERS
+from pytask_r.serialization import create_path_to_serialized
 from pytask_r.shared import r
 
 
 def run_r_script(
-    _script: Path, _options: list[str], _serialized: Path, **kwargs: Any  # noqa: ARG001
+    _script: Path,
+    _options: list[str],
+    _serialized: Path,
+    **kwargs: Any,  # noqa: ARG001
 ) -> None:
     """Run an R script."""
     cmd = ["Rscript", _script.as_posix(), *_options, str(_serialized)]
@@ -49,10 +54,11 @@ def pytask_collect_task(
         # Parse @pytask.mark.r decorator.
         obj, marks = remove_marks(obj, "r")
         if len(marks) > 1:
-            raise ValueError(
+            msg = (
                 f"Task {name!r} has multiple @pytask.mark.r marks, but only one is "
                 "allowed."
             )
+            raise ValueError(msg)
 
         mark = _parse_r_mark(
             mark=marks[0],
@@ -88,10 +94,11 @@ def pytask_collect_task(
         )
 
         if not (isinstance(script_node, PathNode) and script_node.path.suffix == ".r"):
-            raise ValueError(
+            msg = (
                 "The 'script' keyword of the @pytask.mark.r decorator must point "
                 f"to Julia file with the .r suffix, but it is {script_node}."
             )
+            raise ValueError(msg)
 
         options_node = session.hook.pytask_collect_node(
             session=session,
@@ -181,5 +188,4 @@ def _parse_r_mark(
     )
     parsed_kwargs["suffix"] = suffix or proposed_suffix  # type: ignore[assignment]
 
-    mark = Mark("r", (), parsed_kwargs)
-    return mark
+    return Mark("r", (), parsed_kwargs)
