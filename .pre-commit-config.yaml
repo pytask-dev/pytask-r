@@ -17,33 +17,19 @@ repos:
     -   id: python-no-log-warn
     -   id: python-use-type-annotations
     -   id: text-unicode-replacement-char
--   repo: https://github.com/asottile/reorder-python-imports
-    rev: v3.12.0
-    hooks:
-    -   id: reorder-python-imports
-        args: [--py37-plus, --add-import, 'from __future__ import annotations']
 -   repo: https://github.com/asottile/setup-cfg-fmt
     rev: v2.5.0
     hooks:
     -   id: setup-cfg-fmt
--   repo: https://github.com/psf/black
-    rev: 24.4.0
-    hooks:
-    -   id: black
 -   repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.3.7
     hooks:
       - id: ruff
+      - id: ruff-format
 -   repo: https://github.com/dosisod/refurb
     rev: v2.0.0
     hooks:
     -   id: refurb
-        args: [--ignore, FURB126]
--   repo: https://github.com/econchick/interrogate
-    rev: 1.7.0
-    hooks:
-    -   id: interrogate
-        args: [-v, --fail-under=40, src, tests]
 -   repo: https://github.com/executablebooks/mdformat
     rev: 0.7.17
     hooks:
@@ -74,7 +60,7 @@ repos:
     hooks:
     -   id: check-manifest
         args: [--no-build-isolation]
-        additional_dependencies: [setuptools-scm, toml]
+        additional_dependencies: [setuptools-scm, wheel, toml]
 -   repo: meta
     hooks:
     -   id: check-hooks-apply

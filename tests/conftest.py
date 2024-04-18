@@ -8,7 +8,6 @@ from typing import Callable
 import pytest
 from click.testing import CliRunner
 
-
 needs_rscript = pytest.mark.skipif(
     shutil.which("Rscript") is None, reason="R with Rscript needs to be installed."
 )
@@ -37,7 +36,7 @@ class SysPathsSnapshot:
     """A snapshot for sys.path."""
 
     def __init__(self) -> None:
-        self.__saved = list(sys.path), list(sys.meta_path)
+        self.__saved = sys.path.copy(), sys.meta_path.copy()
 
     def restore(self) -> None:
         sys.path[:], sys.meta_path[:] = self.__saved
@@ -48,7 +47,7 @@ class SysModulesSnapshot:
 
     def __init__(self, preserve: Callable[[str], bool] | None = None) -> None:
         self.__preserve = preserve
-        self.__saved = dict(sys.modules)
+        self.__saved = sys.modules.copy()
 
     def restore(self) -> None:
         if self.__preserve:

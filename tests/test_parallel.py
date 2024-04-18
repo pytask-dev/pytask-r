@@ -5,8 +5,8 @@ from __future__ import annotations
 import textwrap
 
 import pytest
-from pytask import cli
 from pytask import ExitCode
+from pytask import cli
 
 from tests.conftest import needs_rscript
 from tests.conftest import parametrize_parse_code_serializer_suffix

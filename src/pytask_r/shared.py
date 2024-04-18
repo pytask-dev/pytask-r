@@ -1,12 +1,15 @@
-"""This module contains shared functions."""
+"""Contains shared functions."""
 
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TYPE_CHECKING
 from typing import Any
 from typing import Callable
 from typing import Iterable
 from typing import Sequence
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def r(

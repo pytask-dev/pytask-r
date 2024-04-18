@@ -5,12 +5,13 @@ from __future__ import annotations
 import shutil
 from typing import Any
 
-from pytask import get_marks
-from pytask import hookimpl
 from pytask import PPathNode
 from pytask import PTask
 from pytask import PythonNode
+from pytask import get_marks
+from pytask import hookimpl
 from pytask.tree_util import tree_map
+
 from pytask_r.serialization import serialize_keyword_arguments
 from pytask_r.shared import r
 
@@ -21,9 +22,10 @@ def pytask_execute_task_setup(task: PTask) -> None:
     marks = get_marks(task, "r")
     if marks:
         if shutil.which("Rscript") is None:
-            raise RuntimeError(
+            msg = (
                 "Rscript is needed to run R scripts, but it is not found on your PATH."
             )
+            raise RuntimeError(msg)
 
         assert len(marks) == 1
 
@@ -32,9 +34,9 @@ def pytask_execute_task_setup(task: PTask) -> None:
         assert suffix
 
         serialized_node: PythonNode = task.depends_on["_serialized"]  # type: ignore[assignment]
-        serialized_node.value.parent.mkdir(parents=True, exist_ok=True)
+        serialized_node.value.parent.mkdir(parents=True, exist_ok=True)  # type: ignore[union-attr]
         kwargs = collect_keyword_arguments(task)
-        serialize_keyword_arguments(serializer, serialized_node.value, kwargs)
+        serialize_keyword_arguments(serializer, serialized_node.value, kwargs)  # type: ignore[arg-type]
 
 
 def collect_keyword_arguments(task: PTask) -> dict[str, Any]:
