@@ -6,7 +6,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CONDA_EXE: micromamba
+  CONDA_EXE: mamba
 
 on:
   push:
@@ -40,6 +40,7 @@ jobs:
               - conda-forge
           create-args: >-
             python=${{ matrix.python-version }}
+            mamba
             tox-conda
           cache-environment: true
 
