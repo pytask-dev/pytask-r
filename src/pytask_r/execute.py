@@ -27,11 +27,11 @@ def pytask_execute_task_setup(task: PTask) -> None:
             )
             raise RuntimeError(msg)
 
-        assert len(marks) == 1
+        if len(marks) > 1:
+            msg = "Only one R marker is allowed per task."
+            raise ValueError(msg)
 
-        _, _, serializer, suffix = r(**marks[0].kwargs)
-        assert serializer
-        assert suffix
+        _, _, serializer, _ = r(**marks[0].kwargs)
 
         serialized_node: PythonNode = task.depends_on["_serialized"]  # type: ignore[assignment]
         serialized_node.value.parent.mkdir(parents=True, exist_ok=True)  # type: ignore[union-attr]
