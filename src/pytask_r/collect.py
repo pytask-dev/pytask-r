@@ -93,10 +93,13 @@ def pytask_collect_task(
             ),
         )
 
-        if not (isinstance(script_node, PathNode) and script_node.path.suffix == ".r"):
+        if not (
+            isinstance(script_node, PathNode)
+            and script_node.path.suffix in (".r", ".R")
+        ):
             msg = (
                 "The 'script' keyword of the @pytask.mark.r decorator must point "
-                f"to an R file with the .r extension, but it is {script_node}."
+                f"to an R file with the .r or .R extension, but it is {script_node}."
             )
             raise ValueError(msg)
 
