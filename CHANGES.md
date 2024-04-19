@@ -8,6 +8,7 @@ releases are available on [PyPI](https://pypi.org/project/pytask-r) and
 ## 0.4.1 - 2024-xx-xx
 
 - {pull}`46` modernizes the package.
+- {pull}`47` fixes couple of issues raised in {issue}`45`.
 
 ## 0.4.0 - 2023-10-08
 
