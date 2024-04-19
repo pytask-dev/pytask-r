@@ -276,3 +276,33 @@ def test_run_r_script_with_capital_extension(runner, tmp_path):
 
     assert result.exit_code == ExitCode.OK
     assert tmp_path.joinpath("out.txt").exists()
+
+
+@needs_rscript
+@pytest.mark.end_to_end()
+@parametrize_parse_code_serializer_suffix
+def test_run_r_script_w_nested_inputs(
+    runner, tmp_path, parse_config_code, serializer, suffix
+):
+    task_source = f"""
+    from pytask import mark, task
+
+    @task(kwargs={{"content": {{"first": "Hello, ", "second": "World!"}}}})
+    @mark.r(script="script.r", serializer="{serializer}", suffix="{suffix}")
+    @mark.produces("out.txt")
+    def task_run_r_script(): ...
+    """
+    tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
+
+    r_script = f"""
+    {parse_config_code}
+    file_descriptor <- file(config$produces)
+    writeLines(c(config$content$first, config$content$second), file_descriptor)
+    close(file_descriptor)
+    """
+    tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
+
+    result = runner.invoke(cli, [tmp_path.as_posix()])
+
+    assert result.exit_code == ExitCode.OK
+    assert tmp_path.joinpath("out.txt").read_text() == "Hello, World!"
