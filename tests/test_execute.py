@@ -40,12 +40,12 @@ def test_run_r_script(  # noqa: PLR0913
     runner, tmp_path, parse_config_code, serializer, suffix, depends_on
 ):
     task_source = f"""
-    import pytask
+    from pathlib import Path
+    from pytask import mark
 
-    @pytask.mark.r(script="script.r", serializer="{serializer}", suffix="{suffix}")
-    @pytask.mark.depends_on({depends_on})
-    @pytask.mark.produces("out.txt")
-    def task_run_r_script(): ...
+    @mark.r(script="script.r", serializer="{serializer}", suffix="{suffix}")
+    @mark.depends_on({depends_on})
+    def task_run_r_script(produces = Path("out.txt")): ...
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
     tmp_path.joinpath("in_1.txt").touch()

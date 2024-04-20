@@ -5,7 +5,7 @@ chronological order. Releases follow [semantic versioning](https://semver.org/) 
 releases are available on [PyPI](https://pypi.org/project/pytask-r) and
 [Anaconda.org](https://anaconda.org/conda-forge/pytask-r).
 
-## 0.4.1 - 2024-xx-xx
+## 0.4.1 - 2024-04-20
 
 - {pull}`46` modernizes the package.
 - {pull}`47` fixes couple of issues raised in {issue}`45`.

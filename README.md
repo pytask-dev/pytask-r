@@ -31,34 +31,30 @@ You also need to have R installed and `Rscript` on your command line. Test it by
 the following on the command line
 
 ```console
-$ Rscript --help
+Rscript --help
 ```
 
-If an error is shown instead of a help page, you can install R with `conda` by choosing
-either R or Microsoft R Open (MRO). Choose one of the two following commands. (See
-[here](https://docs.anaconda.com/anaconda/user-guide/tasks/%20using-r-language) for
-further explanation on Anaconda, R, and MRO.)
+If an error is shown instead of a help page, you can install R with `conda`.
 
 ```console
-$ conda install -c r r-base     # For normal R.
-$ conda install -c r mro-base   # For MRO.
+conda install -c conda-forge r-base
 ```
 
 Or install install R from the official [R Project](https://www.r-project.org/).
 
 ## Usage
 
-To create a task which runs a R script, define a task function with the `@pytask.mark.r`
-decorator. The `script` keyword provides an absolute path or path relative to the task
-module to the R script.
+To create a task that runs an R script, define a task function with the `@mark.r`
+decorator. The `script` keyword provides an absolute path or a path relative to the task
+module.
 
 ```python
-import pytask
+from pathlib import Path
+from pytask import mark
 
 
-@pytask.mark.r(script="script.r")
-@pytask.mark.produces("out.rds")
-def task_run_r_script():
+@mark.r(script=Path("script.r"))
+def task_run_r_script(produces: Path = Path("out.rds")):
     pass
 ```
 
@@ -68,10 +64,9 @@ more information.
 
 ### Dependencies and Products
 
-Dependencies and products can be added as with a normal pytask task using the
-`@pytask.mark.depends_on` and `@pytask.mark.produces` decorators. which is explained in
-this
-[tutorial](https://pytask-dev.readthedocs.io/en/stable/tutorials/defining_dependencies_products.html).
+Dependencies and products can be added as usual. See this
+[tutorial](https://pytask-dev.readthedocs.io/en/stable/tutorials/defining_dependencies_products.html)
+for some help.
 
 ### Accessing dependencies and products in the script
 
@@ -99,10 +94,13 @@ To parse the JSON file, you need to install
 You can also pass any other information to your script by using the `@task` decorator.
 
 ```python
+from pathlib import Path
+from pytask import mark, task
+
+
 @task(kwargs={"number": 1})
-@pytask.mark.r(script="script.r")
-@pytask.mark.produces("out.rds")
-def task_run_r_script():
+@mark.r(script=Path("script.r"))
+def task_run_r_script(produces: Path = Path("out.rds")):
     pass
 ```
 
@@ -115,11 +113,11 @@ config$number  # Is 1.
 ### Debugging
 
 In case a task throws an error, you might want to execute the script independently from
-pytask. After a failed execution, you see the command which executed the R script in the
+pytask. After a failed execution, you see the command that executed the R script in the
 report of the task. It looks roughly like this
 
 ```console
-$ Rscript <options> script.r <path-to>/.pytask/task_py_task_example.json
+Rscript <options> script.r <path-to>/.pytask/task_py_task_example.json
 ```
 
 ### Command Line Arguments
@@ -128,9 +126,8 @@ The decorator can be used to pass command line arguments to `Rscript`. See the f
 example.
 
 ```python
-@pytask.mark.r(script="script.r", options="--vanilla")
-@pytask.mark.produces("out.rds")
-def task_run_r_script():
+@mark.r(script=Path("script.r"), options="--vanilla")
+def task_run_r_script(produces: Path = Path("out.rds")):
     pass
 ```
 
@@ -146,9 +143,8 @@ different outputs.
 for i in range(2):
 
     @task
-    @pytask.mark.r(script=f"script_{i}.r")
-    @pytask.mark.produces(f"out_{i}.csv")
-    def task_execute_r_script():
+    @mark.r(script=Path(f"script_{i}.r"))
+    def task_execute_r_script(produces: Path = Path(f"out_{i}.csv")):
         pass
 ```
 
@@ -159,9 +155,8 @@ If you want to pass different inputs to the same R script, pass these arguments 
 for i in range(2):
 
     @task(kwargs={"i": i})
-    @pytask.mark.r(script="script.r")
-    @pytask.mark.produces(f"output_{i}.csv")
-    def task_execute_r_script():
+    @mark.r(script=Path("script.r"))
+    def task_execute_r_script(produces: Path = Path(f"output_{i}.csv")):
         pass
 ```
 
@@ -189,11 +184,11 @@ supports YAML (if PyYaml is installed).
 Use the `serializer` keyword arguments of the `@pytask.mark.r` decorator with
 
 ```python
-@pytask.mark.r(script="script.r", serializer="yaml")
+@mark.r(script=Path("script.r"), serializer="yaml")
 def task_example(): ...
 ```
 
-And in your R script use
+And, in your R script use
 
 ```r
 library(yaml)
@@ -203,8 +198,8 @@ config <- read_yaml(args[length(args)])
 
 Note that the `YAML` package needs to be installed.
 
-If you need a custom serializer, you can also provide any callable to `serializer` which
-transforms data to a string. Use `suffix` to set the correct file ending.
+If you need a custom serializer, you can also provide any callable `serializer` which
+transforms data into a string. Use `suffix` to set the correct file ending.
 
 Here is a replication of the JSON example.
 
@@ -212,13 +207,13 @@ Here is a replication of the JSON example.
 import json
 
 
-@pytask.mark.r(script="script.r", serializer=json.dumps, suffix=".json")
+@mark.r(script=Path("script.r"), serializer=json.dumps, suffix=".json")
 def task_example(): ...
 ```
 
 ### Configuration
 
-You can influence the default behavior of pytask-r with some configuration values.
+You can influence the default behavior of pytask-r with configuration values.
 
 **`r_serializer`**
 
