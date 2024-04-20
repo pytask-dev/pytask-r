@@ -44,11 +44,11 @@ def collect_keyword_arguments(task: PTask) -> dict[str, Any]:
     # Remove all kwargs from the task so that they are not passed to the function.
     kwargs: dict[str, Any] = {
         **tree_map(  # type: ignore[dict-item]
-            lambda x: str(x.path) if isinstance(x, PPathNode) else str(x.value),
+            lambda x: str(x.path) if isinstance(x, PPathNode) else x.value,
             task.depends_on,
         ),
         **tree_map(  # type: ignore[dict-item]
-            lambda x: str(x.path) if isinstance(x, PPathNode) else str(x.value),
+            lambda x: str(x.path) if isinstance(x, PPathNode) else x.value,
             task.produces,
         ),
     }

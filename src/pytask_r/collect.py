@@ -66,7 +66,7 @@ def pytask_collect_task(
             default_serializer=session.config["r_serializer"],
             default_suffix=session.config["r_suffix"],
         )
-        script, options, _, suffix = r(**marks[0].kwargs)
+        script, options, _, suffix = r(**mark.kwargs)
 
         obj.pytask_meta.markers.append(mark)
 

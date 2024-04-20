@@ -20,7 +20,7 @@ def pytask_parse_config(config: dict[str, Any]) -> None:
             f"{list(SERIALIZERS)}."
         )
         raise ValueError(msg)
-    config["r_suffix"] = config.get("r_suffix", "")
+    config["r_suffix"] = config.get("r_suffix", ".json")
     config["r_options"] = _parse_value_or_whitespace_option(config.get("r_options"))
 
 
