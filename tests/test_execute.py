@@ -63,7 +63,7 @@ def test_run_r_script(  # noqa: PLR0913
     tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
 
     result = runner.invoke(cli, [tmp_path.as_posix()])
-    print(result.output)  # noqa: T201
+
     assert result.exit_code == ExitCode.OK
     assert tmp_path.joinpath("out.txt").exists()
 
@@ -93,7 +93,7 @@ def test_run_r_script_w_task_decorator(
     tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
 
     result = runner.invoke(cli, [tmp_path.as_posix()])
-    print(result.output)  # noqa: T201
+
     assert result.exit_code == ExitCode.OK
     assert tmp_path.joinpath("out.txt").exists()
 
@@ -160,7 +160,7 @@ def test_run_r_script_w_saving_workspace(
     tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
 
     result = runner.invoke(cli, [tmp_path.as_posix()])
-    print(result.output)  # noqa: T201
+
     assert result.exit_code == ExitCode.OK
     assert tmp_path.joinpath("out.txt").exists()
 
