@@ -54,7 +54,7 @@ def test_run_r_script(  # noqa: PLR0913
     r_script = f"""
     {parse_config_code}
     if(length(config["depends_on"]) <= 0){{
-       stop("error message to print")
+       stop("error message to print")  # noqa: T201
     }}
     file_descriptor <- file(config$produces)
     writeLines(c("So, so you think you can tell heaven from hell?"), file_descriptor)
@@ -63,7 +63,7 @@ def test_run_r_script(  # noqa: PLR0913
     tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
 
     result = runner.invoke(cli, [tmp_path.as_posix()])
-
+    print(result.output)  # noqa: T201
     assert result.exit_code == ExitCode.OK
     assert tmp_path.joinpath("out.txt").exists()
 
@@ -93,7 +93,7 @@ def test_run_r_script_w_task_decorator(
     tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
 
     result = runner.invoke(cli, [tmp_path.as_posix()])
-
+    print(result.output)  # noqa: T201
     assert result.exit_code == ExitCode.OK
     assert tmp_path.joinpath("out.txt").exists()
 
@@ -160,7 +160,7 @@ def test_run_r_script_w_saving_workspace(
     tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
 
     result = runner.invoke(cli, [tmp_path.as_posix()])
-
+    print(result.output)  # noqa: T201
     assert result.exit_code == ExitCode.OK
     assert tmp_path.joinpath("out.txt").exists()
 
