@@ -40,14 +40,12 @@ def test_run_r_script(  # noqa: PLR0913
     runner, tmp_path, parse_config_code, serializer, suffix, depends_on
 ):
     task_source = f"""
-    import pytask
+    from pathlib import Path
+    from pytask import mark
 
-    @pytask.mark.r(script="script.r", serializer="{serializer}", suffix="{suffix}")
-    @pytask.mark.depends_on({depends_on})
-    @pytask.mark.produces("out.txt")
-    def task_run_r_script():
-        pass
-
+    @mark.r(script="script.r", serializer="{serializer}", suffix="{suffix}")
+    @mark.depends_on({depends_on})
+    def task_run_r_script(produces = Path("out.txt")): ...
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
     tmp_path.joinpath("in_1.txt").touch()
@@ -56,7 +54,7 @@ def test_run_r_script(  # noqa: PLR0913
     r_script = f"""
     {parse_config_code}
     if(length(config["depends_on"]) <= 0){{
-       stop("error message to print")
+       stop("error message to print")  # noqa: T201
     }}
     file_descriptor <- file(config$produces)
     writeLines(c("So, so you think you can tell heaven from hell?"), file_descriptor)
@@ -77,14 +75,12 @@ def test_run_r_script_w_task_decorator(
     runner, tmp_path, parse_config_code, serializer, suffix
 ):
     task_source = f"""
-    import pytask
+    from pytask import task, mark
 
-    @pytask.mark.task
-    @pytask.mark.r(script="script.r", serializer="{serializer}", suffix="{suffix}")
-    @pytask.mark.produces("out.txt")
-    def run_r_script():
-        pass
-
+    @task
+    @mark.r(script="script.r", serializer="{serializer}", suffix="{suffix}")
+    @mark.produces("out.txt")
+    def run_r_script(): ...
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
 
@@ -113,8 +109,7 @@ def test_raise_error_if_rscript_is_not_found(
 
     @pytask.mark.r(script="script.r", serializer="{serializer}", suffix="{suffix}")
     @pytask.mark.produces("out.txt")
-    def task_run_r_script():
-        pass
+    def task_run_r_script(): ...
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
 
@@ -152,8 +147,7 @@ def test_run_r_script_w_saving_workspace(
         suffix="{suffix}"
     )
     @pytask.mark.produces("out.txt")
-    def task_run_r_script():
-        pass
+    def task_run_r_script(): ...
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
 
@@ -188,8 +182,7 @@ def test_run_r_script_w_wrong_cmd_option(
         suffix="{suffix}"
     )
     @pytask.mark.produces("out.txt")
-    def task_run_r_script():
-        pass
+    def task_run_r_script(): ...
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
 
@@ -216,8 +209,7 @@ def test_run_r_script_w_custom_serializer(runner, tmp_path):
 
     @pytask.mark.r(script="script.r", serializer=json.dumps, suffix=".json")
     @pytask.mark.produces("out.txt")
-    def task_run_r_script():
-        pass
+    def task_run_r_script(): ...
 
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
@@ -247,8 +239,7 @@ def test_run_r_script_fails_w_multiple_markers(runner, tmp_path):
     @pytask.mark.r(script="script.r")
     @pytask.mark.r(script="script.r")
     @pytask.mark.produces("out.txt")
-    def task_run_r_script():
-        pass
+    def task_run_r_script(): ...
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
     tmp_path.joinpath("script.r").touch()
@@ -257,3 +248,61 @@ def test_run_r_script_fails_w_multiple_markers(runner, tmp_path):
 
     assert result.exit_code == ExitCode.COLLECTION_FAILED
     assert "has multiple @pytask.mark.r marks" in result.output
+
+
+@needs_rscript
+@pytest.mark.end_to_end()
+def test_run_r_script_with_capital_extension(runner, tmp_path):
+    task_source = """
+    import pytask
+
+    @pytask.mark.r(script="script.R")
+    @pytask.mark.produces("out.txt")
+    def task_run_r_script(): ...
+    """
+    tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
+
+    r_script = """
+    library(jsonlite)
+    args <- commandArgs(trailingOnly=TRUE)
+    config <- read_json(args[length(args)])
+    file_descriptor <- file(config$produces)
+    writeLines(c("So, so you think you can tell heaven from hell?"), file_descriptor)
+    close(file_descriptor)
+    """
+    tmp_path.joinpath("script.R").write_text(textwrap.dedent(r_script))
+
+    result = runner.invoke(cli, [tmp_path.as_posix()])
+
+    assert result.exit_code == ExitCode.OK
+    assert tmp_path.joinpath("out.txt").exists()
+
+
+@needs_rscript
+@pytest.mark.end_to_end()
+@parametrize_parse_code_serializer_suffix
+def test_run_r_script_w_nested_inputs(
+    runner, tmp_path, parse_config_code, serializer, suffix
+):
+    task_source = f"""
+    from pytask import mark, task
+
+    @task(kwargs={{"content": {{"first": "Hello, ", "second": "World!"}}}})
+    @mark.r(script="script.r", serializer="{serializer}", suffix="{suffix}")
+    @mark.produces("out.txt")
+    def task_run_r_script(): ...
+    """
+    tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
+
+    r_script = f"""
+    {parse_config_code}
+    file_descriptor <- file(config$produces)
+    writeLines(c(config$content$first, config$content$second), file_descriptor)
+    close(file_descriptor)
+    """
+    tmp_path.joinpath("script.r").write_text(textwrap.dedent(r_script))
+
+    result = runner.invoke(cli, [tmp_path.as_posix()])
+
+    assert result.exit_code == ExitCode.OK
+    assert tmp_path.joinpath("out.txt").read_text() == "Hello, \nWorld!\n"

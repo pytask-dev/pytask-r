@@ -66,11 +66,11 @@ def pytask_collect_task(
             default_serializer=session.config["r_serializer"],
             default_suffix=session.config["r_suffix"],
         )
-        script, options, _, suffix = r(**marks[0].kwargs)
+        script, options, _, suffix = r(**mark.kwargs)
 
         obj.pytask_meta.markers.append(mark)
 
-        # Collect the nodes in @pytask.mark.julia and validate them.
+        # Collect the nodes in @pytask.mark.r and validate them.
         path_nodes = Path.cwd() if path is None else path.parent
 
         if isinstance(script, str):
@@ -93,10 +93,13 @@ def pytask_collect_task(
             ),
         )
 
-        if not (isinstance(script_node, PathNode) and script_node.path.suffix == ".r"):
+        if not (
+            isinstance(script_node, PathNode)
+            and script_node.path.suffix in (".r", ".R")
+        ):
             msg = (
                 "The 'script' keyword of the @pytask.mark.r decorator must point "
-                f"to Julia file with the .r suffix, but it is {script_node}."
+                f"to an R file with the .r or .R extension, but it is {script_node}."
             )
             raise ValueError(msg)
 
@@ -169,7 +172,7 @@ def _parse_r_mark(
     default_serializer: str,
     default_suffix: str,
 ) -> Mark:
-    """Parse a Julia mark."""
+    """Parse an R mark."""
     script, options, serializer, suffix = r(**mark.kwargs)
 
     parsed_kwargs = {}

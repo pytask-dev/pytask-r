@@ -10,7 +10,7 @@ classifiers = [
     "Programming Language :: R",
 ]
 requires-python = ">=3.8"
-dependencies = ["click", "pluggy>=1.0.0", "pytask>=0.4.0"]
+dependencies = ["click", "pluggy>=1.0.0", "pytask>=0.4.5"]
 dynamic = ["version"]
 
 [[project.authors]]
