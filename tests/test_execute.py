@@ -305,4 +305,4 @@ def test_run_r_script_w_nested_inputs(
     result = runner.invoke(cli, [tmp_path.as_posix()])
 
     assert result.exit_code == ExitCode.OK
-    assert tmp_path.joinpath("out.txt").read_text() == "Hello, World!"
+    assert tmp_path.joinpath("out.txt").read_text() == "Hello, \nWorld!\n"
