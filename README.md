@@ -117,7 +117,7 @@ pytask. After a failed execution, you see the command that executed the R script
 report of the task. It looks roughly like this
 
 ```console
-Rscript <options> script.r <path-to>/.pytask/task_py_task_example.json
+Rscript <options> script.r <path-to>/.pytask/pytask-r/<uuid4>.json
 ```
 
 ### Command Line Arguments
@@ -227,7 +227,7 @@ r_serializer = "json"
 **`r_suffix`**
 
 Use this option to set the default suffix of the file which contains serialized paths to
-dependencies and products and more.
+dependencies, products and more.
 
 ```toml
 [tool.pytask.ini_options]
