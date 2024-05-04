@@ -9,6 +9,7 @@ releases are available on [PyPI](https://pypi.org/project/pytask-r) and
 
 - {pull}`50` uses pixi to install R and uses uuid4 to generate more robust file names
   for serialized arguments.
+- {pull}`51` reenables testing with different Python versions.
 
 ## 0.4.1 - 2024-04-20
 
