@@ -64,6 +64,7 @@ def test_run_r_script(  # noqa: PLR0913
 
     result = runner.invoke(cli, [tmp_path.as_posix()])
 
+    print(result.output)  # noqa: T201
     assert result.exit_code == ExitCode.OK
     assert tmp_path.joinpath("out.txt").exists()
 

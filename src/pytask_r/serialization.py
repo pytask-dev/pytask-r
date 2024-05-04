@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import json
+import uuid
 from pathlib import Path
 from typing import Any
 from typing import Callable
 
 from pytask import PTask
 from pytask import PTaskWithPath
+
+__all__ = ["create_path_to_serialized", "serialize_keyword_arguments", "SERIALIZERS"]
 
 _HIDDEN_FOLDER = ".pytask/pytask-r"
 
@@ -27,25 +30,10 @@ else:
 
 def create_path_to_serialized(task: PTask, suffix: str) -> Path:
     """Create path to serialized."""
-    parent = task.path.parent if isinstance(task, PTaskWithPath) else Path.cwd()
-    file_name = create_file_name(task, suffix)
-    return parent.joinpath(_HIDDEN_FOLDER, file_name).with_suffix(suffix)
-
-
-def create_file_name(task: PTask, suffix: str) -> str:
-    """Create the file name of the file containing the serialized kwargs.
-
-    Some characters need to be escaped since they are not valid characters on file
-    systems.
-
-    """
     return (
-        task.name.replace("[", "_")
-        .replace("]", "_")
-        .replace("::", "_")
-        .replace(".", "_")
-        .replace("/", "_")
-        + suffix
+        (task.path.parent if isinstance(task, PTaskWithPath) else Path.cwd())
+        .joinpath(_HIDDEN_FOLDER, str(uuid.uuid4()))
+        .with_suffix(suffix)
     )
 
 
