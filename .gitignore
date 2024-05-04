@@ -17,3 +17,10 @@ __pycache__
 build
 dist
 src/pytask_r/_version.py
+
+.mypy_cache
+.ruff_cache
+.pytest_cache
+# pixi environments
+.pixi
+*.egg-info

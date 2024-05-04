@@ -5,9 +5,6 @@ concurrency:
   group: ${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
-env:
-  CONDA_EXE: mamba
-
 on:
   push:
     branches:
@@ -31,35 +28,27 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: mamba-org/setup-micromamba@v1
+      - uses: prefix-dev/setup-pixi@v0.6.0
         with:
-          environment-name: gha-testing
-          condarc: |
-            channels:
-              - nodefaults
-              - conda-forge
-          create-args: >-
-            python=${{ matrix.python-version }}
-            mamba
-            tox-conda
-          cache-environment: true
+          pixi-version: v0.20.1
+          cache: true
 
       # Unit, integration, and end-to-end tests.
 
       - name: Run unit tests and doctests.
         shell: bash -l {0}
-        run: tox -e test -- -m "unit or (not integration and not end_to_end)" --cov=./ --cov-report=xml -n auto
+        run: pixi run -e test pytest -m "unit or (not integration and not end_to_end)" --cov=./ --cov-report=xml -n auto
 
-      - name: Upload coverage report for unit tests and doctests.
-        if: runner.os == 'Linux' && matrix.python-version == '3.10'
-        shell: bash -l {0}
-        run: bash <(curl -s https://codecov.io/bash) -F unit -c
+      - name: Upload unit test coverage reports to Codecov with GitHub Action
+        uses: codecov/codecov-action@v4
+        with:
+          flags: unit
 
       - name: Run end-to-end tests.
         shell: bash -l {0}
-        run: tox -e test -- -m end_to_end --cov=./ --cov-report=xml -n auto
+        run: pixi run -e test pytest -m end_to_end --cov=./ --cov-report=xml -n auto
 
-      - name: Upload coverage reports of end-to-end tests.
-        if: runner.os == 'Linux' && matrix.python-version == '3.10'
-        shell: bash -l {0}
-        run: bash <(curl -s https://codecov.io/bash) -F end_to_end -c
+      - name: Upload end_to_end test coverage reports to Codecov with GitHub Action
+        uses: codecov/codecov-action@v4
+        with:
+          flags: end_to_end
