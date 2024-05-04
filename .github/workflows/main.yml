@@ -32,6 +32,7 @@ jobs:
         with:
           pixi-version: v0.20.1
           cache: true
+          environments: test
 
       # Unit, integration, and end-to-end tests.
 
