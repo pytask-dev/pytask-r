@@ -120,6 +120,22 @@ pytask_r = { path = ".", editable = true }
 [tool.pixi.environments]
 default = { solve-group = "default" }
 test = { features = ["test"], solve-group = "default" }
+py38 = { features = ["py38", "test"]}
+py39 = { features = ["py39", "test"]}
+py310 = { features = ["py310", "test"]}
+py311 = { features = ["py311", "test"]}
+py312 = { features = ["py312", "test"]}
+
+[tool.pixi.feature.py38.dependencies]
+python = "3.8.*"
+[tool.pixi.feature.py39.dependencies]
+python = "3.9.*"
+[tool.pixi.feature.py310.dependencies]
+python = "3.10.*"
+[tool.pixi.feature.py311.dependencies]
+python = "3.11.*"
+[tool.pixi.feature.py312.dependencies]
+python = "3.12.*"
 
 [tool.pixi.feature.test.dependencies]
 r-base = ">=4.0.0"

@@ -17,14 +17,14 @@ jobs:
 
   run-tests:
 
-    name: Run tests for ${{ matrix.os }} on ${{ matrix.python-version }}
+    name: Run tests for ${{ matrix.os }} on ${{ matrix.environment }}
     runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        environment: ['py38', 'py39', 'py310', 'py311', 'py312']
 
     steps:
       - uses: actions/checkout@v4
@@ -32,13 +32,13 @@ jobs:
         with:
           pixi-version: v0.20.1
           cache: true
-          environments: test
+          environments: ${{ matrix.environment }}
 
       # Unit, integration, and end-to-end tests.
 
       - name: Run unit tests and doctests.
         shell: bash -l {0}
-        run: pixi run -e test pytest -m "unit or (not integration and not end_to_end)" --cov=./ --cov-report=xml -n auto
+        run: pixi run -e ${{ matrix.environment }} test -m "unit or (not integration and not end_to_end)" --cov-report=xml -n auto
 
       - name: Upload unit test coverage reports to Codecov with GitHub Action
         uses: codecov/codecov-action@v4
@@ -47,7 +47,7 @@ jobs:
 
       - name: Run end-to-end tests.
         shell: bash -l {0}
-        run: pixi run -e test pytest -m end_to_end --cov=./ --cov-report=xml -n auto
+        run: pixi run -e ${{ matrix.environment }} test -m end_to_end --cov-report=xml -n auto
 
       - name: Upload end_to_end test coverage reports to Codecov with GitHub Action
         uses: codecov/codecov-action@v4
