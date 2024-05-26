@@ -22,9 +22,10 @@ def test_execution_w_varying_dependencies_products(
     import pytask
     from pathlib import Path
 
-    @pytask.mark.depends_on({dependencies})
-    @pytask.mark.produces({products})
-    def task_dummy(depends_on, produces):
+    def task_example(
+        depends_on=[Path(p) for p in {dependencies}],
+        produces=[Path(p) for p in {products}],
+    ):
         if isinstance(produces, dict):
             produces = produces.values()
         elif isinstance(produces, Path):
