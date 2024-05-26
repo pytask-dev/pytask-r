@@ -5,11 +5,12 @@ chronological order. Releases follow [semantic versioning](https://semver.org/) 
 releases are available on [PyPI](https://pypi.org/project/pytask-r) and
 [Anaconda.org](https://anaconda.org/conda-forge/pytask-r).
 
-## x.x.x - 2024-xx-xx
+## 0.4.2 - 2024-xx-xx
 
 - {pull}`50` uses pixi to install R and uses uuid4 to generate more robust file names
   for serialized arguments.
 - {pull}`51` reenables testing with different Python versions.
+- {pull}`54` updates tests for pytask v0.5.
 
 ## 0.4.1 - 2024-04-20
 
