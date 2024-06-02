@@ -39,18 +39,6 @@ repos:
   rev: v2.2.6
   hooks:
     -   id: codespell
--   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.10.0'
-    hooks:
-    -   id: mypy
-        additional_dependencies: [
-            attrs>=21.3.0,
-            click,
-            pytask>=0.4.5,
-            types-PyYAML,
-            types-setuptools
-        ]
-        pass_filenames: false
 -   repo: meta
     hooks:
     -   id: check-hooks-apply

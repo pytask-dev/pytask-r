@@ -120,6 +120,7 @@ pytask_r = { path = ".", editable = true }
 [tool.pixi.environments]
 default = { solve-group = "default" }
 test = { features = ["test"], solve-group = "default" }
+typing = { features = ["typing"], solve-group = "default" }
 py38 = { features = ["py38", "test"]}
 py39 = { features = ["py39", "test"]}
 py310 = { features = ["py310", "test"]}
@@ -144,3 +145,10 @@ r-yaml = "*"
 
 [tool.pixi.feature.test.tasks]
 test = "pytest --cov src --cov tests"
+
+[tool.pixi.feature.typing.dependencies]
+mypy = "*"
+types-pyyaml = "*"
+
+[tool.pixi.feature.typing.tasks]
+typing = "mypy"

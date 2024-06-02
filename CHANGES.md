@@ -11,6 +11,7 @@ releases are available on [PyPI](https://pypi.org/project/pytask-r) and
   for serialized arguments.
 - {pull}`51` reenables testing with different Python versions.
 - {pull}`54` updates tests for pytask v0.5.
+- {pull}`56` re-add type checking.
 
 ## 0.4.1 - 2024-04-20
 
