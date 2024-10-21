@@ -92,6 +92,6 @@ class CustomCliRunner(CliRunner):
             return super().invoke(*args, **kwargs)
 
 
-@pytest.fixture()
+@pytest.fixture
 def runner():
     return CustomCliRunner()
