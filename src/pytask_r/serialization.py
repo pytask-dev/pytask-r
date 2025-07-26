@@ -11,7 +11,7 @@ from typing import Callable
 from pytask import PTask
 from pytask import PTaskWithPath
 
-__all__ = ["create_path_to_serialized", "serialize_keyword_arguments", "SERIALIZERS"]
+__all__ = ["SERIALIZERS", "create_path_to_serialized", "serialize_keyword_arguments"]
 
 _HIDDEN_FOLDER = ".pytask/pytask-r"
 
