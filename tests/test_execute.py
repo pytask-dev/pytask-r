@@ -9,13 +9,13 @@ from pytask import Mark
 from pytask import Task
 from pytask import build
 from pytask import cli
-from pytask_r.execute import pytask_execute_task_setup
 
+from pytask_r.execute import pytask_execute_task_setup
 from tests.conftest import needs_rscript
 from tests.conftest import parametrize_parse_code_serializer_suffix
 
 
-@pytest.mark.unit()
+@pytest.mark.unit
 def test_pytask_execute_task_setup(monkeypatch):
     """Make sure that the task setup raises errors."""
     # Act like r is installed since we do not test this.
@@ -33,7 +33,7 @@ def test_pytask_execute_task_setup(monkeypatch):
 
 
 @needs_rscript
-@pytest.mark.end_to_end()
+@pytest.mark.end_to_end
 @parametrize_parse_code_serializer_suffix
 @pytest.mark.parametrize("depends_on", ["'in_1.txt'", "['in_1.txt', 'in_2.txt']"])
 def test_run_r_script(  # noqa: PLR0913
@@ -70,7 +70,7 @@ def test_run_r_script(  # noqa: PLR0913
 
 
 @needs_rscript
-@pytest.mark.end_to_end()
+@pytest.mark.end_to_end
 @parametrize_parse_code_serializer_suffix
 def test_run_r_script_w_task_decorator(
     runner, tmp_path, parse_config_code, serializer, suffix
@@ -100,7 +100,7 @@ def test_run_r_script_w_task_decorator(
 
 
 @needs_rscript
-@pytest.mark.end_to_end()
+@pytest.mark.end_to_end
 @parametrize_parse_code_serializer_suffix
 def test_raise_error_if_rscript_is_not_found(
     tmp_path, monkeypatch, parse_config_code, serializer, suffix
@@ -132,7 +132,7 @@ def test_raise_error_if_rscript_is_not_found(
 
 
 @needs_rscript
-@pytest.mark.end_to_end()
+@pytest.mark.end_to_end
 @parametrize_parse_code_serializer_suffix
 def test_run_r_script_w_saving_workspace(
     runner, tmp_path, parse_config_code, serializer, suffix
@@ -167,7 +167,7 @@ def test_run_r_script_w_saving_workspace(
 
 
 @needs_rscript
-@pytest.mark.end_to_end()
+@pytest.mark.end_to_end
 @parametrize_parse_code_serializer_suffix
 def test_run_r_script_w_wrong_cmd_option(
     runner, tmp_path, parse_config_code, serializer, suffix
@@ -202,7 +202,7 @@ def test_run_r_script_w_wrong_cmd_option(
 
 
 @needs_rscript
-@pytest.mark.end_to_end()
+@pytest.mark.end_to_end
 def test_run_r_script_w_custom_serializer(runner, tmp_path):
     task_source = """
     import pytask
@@ -232,7 +232,7 @@ def test_run_r_script_w_custom_serializer(runner, tmp_path):
 
 
 @needs_rscript
-@pytest.mark.end_to_end()
+@pytest.mark.end_to_end
 def test_run_r_script_fails_w_multiple_markers(runner, tmp_path):
     task_source = """
     import pytask
@@ -252,7 +252,7 @@ def test_run_r_script_fails_w_multiple_markers(runner, tmp_path):
 
 
 @needs_rscript
-@pytest.mark.end_to_end()
+@pytest.mark.end_to_end
 def test_run_r_script_with_capital_extension(runner, tmp_path):
     task_source = """
     import pytask
@@ -280,7 +280,7 @@ def test_run_r_script_with_capital_extension(runner, tmp_path):
 
 
 @needs_rscript
-@pytest.mark.end_to_end()
+@pytest.mark.end_to_end
 @parametrize_parse_code_serializer_suffix
 def test_run_r_script_w_nested_inputs(
     runner, tmp_path, parse_config_code, serializer, suffix

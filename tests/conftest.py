@@ -15,7 +15,7 @@ needs_rscript = pytest.mark.skipif(
 
 
 parametrize_parse_code_serializer_suffix = pytest.mark.parametrize(
-    "parse_config_code, serializer, suffix",
+    ("parse_config_code", "serializer", "suffix"),
     [
         (
             "library(jsonlite); args <- commandArgs(trailingOnly=TRUE); "
@@ -92,6 +92,6 @@ class CustomCliRunner(CliRunner):
             return super().invoke(*args, **kwargs)
 
 
-@pytest.fixture()
+@pytest.fixture
 def runner():
     return CustomCliRunner()

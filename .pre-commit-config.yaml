@@ -1,13 +1,20 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
     -   id: check-added-large-files
-        args: ['--maxkb=100']
+        args: ['--maxkb=25']
+    -   id: check-case-conflict
     -   id: check-merge-conflict
+    -   id: check-vcs-permalinks
     -   id: check-yaml
     -   id: debug-statements
     -   id: end-of-file-fixer
+    -   id: fix-byte-order-marker
+    -   id: mixed-line-ending
+    -   id: no-commit-to-branch
+        args: [--branch, main]
+    -   id: trailing-whitespace
 -   repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.10.0
     hooks:
@@ -18,16 +25,16 @@ repos:
     -   id: python-use-type-annotations
     -   id: text-unicode-replacement-char
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.2
+    rev: v0.12.4
     hooks:
       - id: ruff
       - id: ruff-format
 -   repo: https://github.com/dosisod/refurb
-    rev: v2.0.0
+    rev: v2.1.0
     hooks:
     -   id: refurb
 -   repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.17
+    rev: 0.7.22
     hooks:
     -   id: mdformat
         additional_dependencies: [
@@ -36,7 +43,7 @@ repos:
         ]
         args: [--wrap, "88"]
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.2.6
+  rev: v2.4.1
   hooks:
     -   id: codespell
 -   repo: meta
