@@ -55,7 +55,7 @@ jobs:
         run: pixi run -e ${{ matrix.environment }} test -m "unit or (not integration and not end_to_end)" --cov-report=xml -n auto
 
       - name: Upload unit test coverage reports to Codecov with GitHub Action
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           flags: unit
 
@@ -64,6 +64,6 @@ jobs:
         run: pixi run -e ${{ matrix.environment }} test -m end_to_end --cov-report=xml -n auto
 
       - name: Upload end_to_end test coverage reports to Codecov with GitHub Action
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           flags: end_to_end
