@@ -27,12 +27,8 @@ repos:
 -   repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.14.10
     hooks:
-      - id: ruff
+      - id: ruff-check
       - id: ruff-format
--   repo: https://github.com/dosisod/refurb
-    rev: v2.2.0
-    hooks:
-    -   id: refurb
 -   repo: https://github.com/executablebooks/mdformat
     rev: 1.0.0
     hooks:
@@ -42,10 +38,10 @@ repos:
             mdformat-black,
         ]
         args: [--wrap, "88"]
-- repo: https://github.com/codespell-project/codespell
-  rev: v2.4.1
-  hooks:
-    -   id: codespell
+-   repo: https://github.com/crate-ci/typos
+    rev: v1.40.1
+    hooks:
+    -   id: typos
 -   repo: meta
     hooks:
     -   id: check-hooks-apply

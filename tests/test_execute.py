@@ -24,7 +24,7 @@ def test_pytask_execute_task_setup(monkeypatch):
     task = Task(
         base_name="task_example",
         path=Path(),
-        function=None,
+        function=lambda: None,
         markers=[Mark("r", (), {})],
     )
 
@@ -133,7 +133,9 @@ def test_raise_error_if_rscript_is_not_found(
     session = build(paths=tmp_path)
 
     assert session.exit_code == ExitCode.FAILED
-    assert isinstance(session.execution_reports[0].exc_info[1], RuntimeError)
+    exc_info = session.execution_reports[0].exc_info
+    assert exc_info is not None
+    assert isinstance(exc_info[1], RuntimeError)
 
 
 @needs_rscript

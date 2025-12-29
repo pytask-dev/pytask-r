@@ -7,6 +7,7 @@ import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 from typing import Any
+from typing import cast
 
 from pytask import PTask
 from pytask import PTaskWithPath
@@ -49,7 +50,9 @@ def serialize_keyword_arguments(
     if callable(serializer):
         serializer_func = serializer
     elif isinstance(serializer, str) and serializer in SERIALIZERS:
-        serializer_func = SERIALIZERS[serializer]["serializer"]  # type: ignore[assignment]
+        serializer_func = cast(
+            "Callable[..., str]", SERIALIZERS[serializer]["serializer"]
+        )
     else:
         msg = f"Serializer {serializer!r} is not known."
         raise ValueError(msg)
