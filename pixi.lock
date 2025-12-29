@@ -11351,8 +11351,8 @@ packages:
   requires_python: '>=3.9'
 - pypi: ./
   name: pytask-r
-  version: 0.4.2.dev11+gd2c5f07ff.d20251229
-  sha256: a2669f2a6e9d12075445f62c005f6c87d85a89bce79007c180dd4e95e99497ed
+  version: 0.4.2.dev16+g9d2e7bab2
+  sha256: 2ae5f9a76fdb15cca33516534610fabad8b931e54e8c4a0141c484d75bde55b6
   requires_dist:
   - click
   - pluggy>=1.0.0
@@ -11362,7 +11362,7 @@ packages:
   - pytest-cov ; extra == 'test'
   - pytest-xdist ; extra == 'test'
   - pyyaml ; extra == 'test'
-  requires_python: '>=3.10,<3.15'
+  requires_python: '>=3.10'
 - pypi: https://files.pythonhosted.org/packages/3b/ab/b3226f0bd7cdcf710fbede2b3548584366da3b19b5021e74f5bde2a8fa3f/pytest-9.0.2-py3-none-any.whl
   name: pytest
   version: 9.0.2
