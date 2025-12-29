@@ -12,6 +12,7 @@ releases are available on [PyPI](https://pypi.org/project/pytask-r) and
 - {pull}`51` reenables testing with different Python versions.
 - {pull}`54` updates tests for pytask v0.5.
 - {pull}`56` re-add type checking.
+- {pull}`57` supports Python 3.10+ (tested 3.10–3.14) and drops Python 3.8 and 3.9.
 
 ## 0.4.1 - 2024-04-20
 
