@@ -50,7 +50,9 @@ def serialize_keyword_arguments(
     if callable(serializer):
         serializer_func = serializer
     elif isinstance(serializer, str) and serializer in SERIALIZERS:
-        serializer_func = cast(Callable[..., str], SERIALIZERS[serializer]["serializer"])
+        serializer_func = cast(
+            "Callable[..., str]", SERIALIZERS[serializer]["serializer"]
+        )
     else:
         msg = f"Serializer {serializer!r} is not known."
         raise ValueError(msg)
