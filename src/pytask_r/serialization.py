@@ -5,11 +5,14 @@ from __future__ import annotations
 import json
 import uuid
 from pathlib import Path
+from typing import TYPE_CHECKING
 from typing import Any
-from typing import Callable
 
 from pytask import PTask
 from pytask import PTaskWithPath
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 __all__ = ["SERIALIZERS", "create_path_to_serialized", "serialize_keyword_arguments"]
 
