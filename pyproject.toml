@@ -9,7 +9,7 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: R",
 ]
-requires-python = ">=3.10,<3.15"
+requires-python = ">=3.10"
 dependencies = ["click", "pluggy>=1.0.0", "pytask>=0.4.5"]
 dynamic = ["version"]
 
