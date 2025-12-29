@@ -18,17 +18,17 @@ def test_parametrized_execution_of_r_script_w_loop(
 ):
     task_source = f"""
     import pytask
+    from pathlib import Path
 
     for i in range(2):
 
-        @pytask.mark.task
+        @pytask.task
         @pytask.mark.r(
             script=f"script_{{i + 1}}.r",
             serializer="{serializer}",
             suffix="{suffix}"
         )
-        @pytask.mark.produces(f"{{i}}.txt")
-        def task_run_r_script():
+        def task_run_r_script(produces=Path(f"{{i}}.txt")):
             pass
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
@@ -60,17 +60,17 @@ def test_parametrize_r_options_and_product_paths_w_loop(
 ):
     task_source = f"""
     import pytask
+    from pathlib import Path
 
     for i in range(2):
 
-        @pytask.mark.task
+        @pytask.task
         @pytask.mark.r(
             script=f"script.r",
             serializer="{serializer}",
             suffix="{suffix}"
         )
-        @pytask.mark.produces(f"{{i}}.rds")
-        def execute_r_script():
+        def execute_r_script(produces=Path(f"{{i}}.rds")):
             pass
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
