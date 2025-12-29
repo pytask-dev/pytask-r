@@ -142,6 +142,7 @@ python = "3.12.*"
 r-base = ">=4.0.0"
 r-jsonlite = "*"
 r-yaml = "*"
+libgfortran5 = "*"
 
 [tool.pixi.feature.test.tasks]
 test = "pytest --cov src --cov tests"
