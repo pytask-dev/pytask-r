@@ -3,11 +3,14 @@ from __future__ import annotations
 import shutil
 import sys
 from contextlib import contextmanager
-from typing import Callable
+from typing import TYPE_CHECKING
 
 import pytest
 from click.testing import CliRunner
 from pytask import storage
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 needs_rscript = pytest.mark.skipif(
     shutil.which("Rscript") is None, reason="R with Rscript needs to be installed."
