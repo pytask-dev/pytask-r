@@ -68,7 +68,9 @@ def pytask_collect_task(
         )
         script, options, _, suffix = r(**mark.kwargs)
 
-        obj.pytask_meta.markers.append(mark)
+        pytask_meta = getattr(obj, "pytask_meta", None)
+        if pytask_meta is not None:
+            pytask_meta.markers.append(mark)
 
         # Collect the nodes in @pytask.mark.r and validate them.
         path_nodes = Path.cwd() if path is None else path.parent
@@ -126,7 +128,7 @@ def pytask_collect_task(
         dependencies["_script"] = script_node
         dependencies["_options"] = options_node
 
-        markers = obj.pytask_meta.markers if hasattr(obj, "pytask_meta") else []
+        markers = pytask_meta.markers if pytask_meta is not None else []
 
         task: PTask
         if path is None:
@@ -189,6 +191,6 @@ def _parse_r_mark(
         and parsed_kwargs["serializer"] in SERIALIZERS
         else default_suffix
     )
-    parsed_kwargs["suffix"] = suffix or proposed_suffix  # type: ignore[assignment]
+    parsed_kwargs["suffix"] = suffix or proposed_suffix
 
     return Mark("r", (), parsed_kwargs)
