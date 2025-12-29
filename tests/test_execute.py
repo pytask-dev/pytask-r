@@ -35,7 +35,10 @@ def test_pytask_execute_task_setup(monkeypatch):
 @needs_rscript
 @pytest.mark.end_to_end
 @parametrize_parse_code_serializer_suffix
-@pytest.mark.parametrize("depends_on", ["'in_1.txt'", "['in_1.txt', 'in_2.txt']"])
+@pytest.mark.parametrize(
+    "depends_on",
+    ['Path("in_1.txt")', '[Path("in_1.txt"), Path("in_2.txt")]'],
+)
 def test_run_r_script(  # noqa: PLR0913
     runner, tmp_path, parse_config_code, serializer, suffix, depends_on
 ):
@@ -44,8 +47,10 @@ def test_run_r_script(  # noqa: PLR0913
     from pytask import mark
 
     @mark.r(script="script.r", serializer="{serializer}", suffix="{suffix}")
-    @mark.depends_on({depends_on})
-    def task_run_r_script(produces = Path("out.txt")): ...
+    def task_run_r_script(
+        depends_on={depends_on},
+        produces=Path("out.txt"),
+    ): ...
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
     tmp_path.joinpath("in_1.txt").touch()
@@ -76,12 +81,12 @@ def test_run_r_script_w_task_decorator(
     runner, tmp_path, parse_config_code, serializer, suffix
 ):
     task_source = f"""
+    from pathlib import Path
     from pytask import task, mark
 
     @task
     @mark.r(script="script.r", serializer="{serializer}", suffix="{suffix}")
-    @mark.produces("out.txt")
-    def run_r_script(): ...
+    def run_r_script(produces=Path("out.txt")): ...
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
 
@@ -107,10 +112,10 @@ def test_raise_error_if_rscript_is_not_found(
 ):
     task_source = f"""
     import pytask
+    from pathlib import Path
 
     @pytask.mark.r(script="script.r", serializer="{serializer}", suffix="{suffix}")
-    @pytask.mark.produces("out.txt")
-    def task_run_r_script(): ...
+    def task_run_r_script(produces=Path("out.txt")): ...
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
 
@@ -140,6 +145,7 @@ def test_run_r_script_w_saving_workspace(
     """Save workspace while executing the script."""
     task_source = f"""
     import pytask
+    from pathlib import Path
 
     @pytask.mark.r(
         script="script.r",
@@ -147,8 +153,7 @@ def test_run_r_script_w_saving_workspace(
         serializer="{serializer}",
         suffix="{suffix}"
     )
-    @pytask.mark.produces("out.txt")
-    def task_run_r_script(): ...
+    def task_run_r_script(produces=Path("out.txt")): ...
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
 
@@ -175,6 +180,7 @@ def test_run_r_script_w_wrong_cmd_option(
     """Save workspace while executing the script."""
     task_source = f"""
     import pytask
+    from pathlib import Path
 
     @pytask.mark.r(
         script="script.r",
@@ -182,8 +188,7 @@ def test_run_r_script_w_wrong_cmd_option(
         serializer="{serializer}",
         suffix="{suffix}"
     )
-    @pytask.mark.produces("out.txt")
-    def task_run_r_script(): ...
+    def task_run_r_script(produces=Path("out.txt")): ...
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
 
@@ -207,10 +212,10 @@ def test_run_r_script_w_custom_serializer(runner, tmp_path):
     task_source = """
     import pytask
     import json
+    from pathlib import Path
 
     @pytask.mark.r(script="script.r", serializer=json.dumps, suffix=".json")
-    @pytask.mark.produces("out.txt")
-    def task_run_r_script(): ...
+    def task_run_r_script(produces=Path("out.txt")): ...
 
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
@@ -236,11 +241,11 @@ def test_run_r_script_w_custom_serializer(runner, tmp_path):
 def test_run_r_script_fails_w_multiple_markers(runner, tmp_path):
     task_source = """
     import pytask
+    from pathlib import Path
 
     @pytask.mark.r(script="script.r")
     @pytask.mark.r(script="script.r")
-    @pytask.mark.produces("out.txt")
-    def task_run_r_script(): ...
+    def task_run_r_script(produces=Path("out.txt")): ...
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
     tmp_path.joinpath("script.r").touch()
@@ -256,10 +261,10 @@ def test_run_r_script_fails_w_multiple_markers(runner, tmp_path):
 def test_run_r_script_with_capital_extension(runner, tmp_path):
     task_source = """
     import pytask
+    from pathlib import Path
 
     @pytask.mark.r(script="script.R")
-    @pytask.mark.produces("out.txt")
-    def task_run_r_script(): ...
+    def task_run_r_script(produces=Path("out.txt")): ...
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
 
@@ -286,12 +291,12 @@ def test_run_r_script_w_nested_inputs(
     runner, tmp_path, parse_config_code, serializer, suffix
 ):
     task_source = f"""
+    from pathlib import Path
     from pytask import mark, task
 
     @task(kwargs={{"content": {{"first": "Hello, ", "second": "World!"}}}})
     @mark.r(script="script.r", serializer="{serializer}", suffix="{suffix}")
-    @mark.produces("out.txt")
-    def task_run_r_script(): ...
+    def task_run_r_script(produces=Path("out.txt")): ...
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(task_source))
 

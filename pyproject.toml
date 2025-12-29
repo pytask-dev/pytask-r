@@ -9,7 +9,7 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: R",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10,<3.15"
 dependencies = ["click", "pluggy>=1.0.0", "pytask>=0.4.5"]
 dynamic = ["version"]
 
@@ -77,7 +77,7 @@ disallow_untyped_defs = false
 ignore_errors = true
 
 [tool.ruff]
-target-version = "py38"
+target-version = "py310"
 fix = true
 unsafe-fixes = true
 
@@ -110,9 +110,15 @@ markers = [
 ]
 norecursedirs = [".idea", ".tox"]
 
-[tool.pixi.project]
+[tool.pixi.workspace]
 channels = ["conda-forge"]
 platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
+
+[tool.pixi.target.osx-64.dependencies]
+libgfortran5 = ">=14.2.0"
+
+[tool.pixi.target.osx-arm64.dependencies]
+libgfortran5 = ">=14.2.0"
 
 [tool.pixi.pypi-dependencies]
 pytask_r = { path = ".", editable = true }
@@ -121,22 +127,22 @@ pytask_r = { path = ".", editable = true }
 default = { solve-group = "default" }
 test = { features = ["test"], solve-group = "default" }
 typing = { features = ["typing"], solve-group = "default" }
-py38 = { features = ["py38", "test"]}
-py39 = { features = ["py39", "test"]}
 py310 = { features = ["py310", "test"]}
 py311 = { features = ["py311", "test"]}
 py312 = { features = ["py312", "test"]}
+py313 = { features = ["py313", "test"]}
+py314 = { features = ["py314", "test"]}
 
-[tool.pixi.feature.py38.dependencies]
-python = "3.8.*"
-[tool.pixi.feature.py39.dependencies]
-python = "3.9.*"
 [tool.pixi.feature.py310.dependencies]
 python = "3.10.*"
 [tool.pixi.feature.py311.dependencies]
 python = "3.11.*"
 [tool.pixi.feature.py312.dependencies]
 python = "3.12.*"
+[tool.pixi.feature.py313.dependencies]
+python = "3.13.*"
+[tool.pixi.feature.py314.dependencies]
+python = "3.14.*"
 
 [tool.pixi.feature.test.dependencies]
 r-base = ">=4.0.0"
