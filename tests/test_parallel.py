@@ -37,17 +37,17 @@ def test_parallel_parametrization_over_source_files_w_loop(
     """
     source = f"""
     import pytask
+    from pathlib import Path
 
     for i in range(1, 3):
 
-        @pytask.mark.task(kwargs={{"content": i}})
+        @pytask.task(kwargs={{"content": i}})
         @pytask.mark.r(
             script=f"script_{{i}}.r",
             serializer="{serializer}",
             suffix="{suffix}"
         )
-        @pytask.mark.produces(f"{{i}}.rds")
-        def task_execute_r_script():
+        def task_execute_r_script(produces=Path(f"{{i}}.rds")):
             pass
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(source))
@@ -81,17 +81,17 @@ def test_parallel_parametrization_over_source_file_w_loop(
     """
     source = f"""
     import pytask
+    from pathlib import Path
 
     for i in range(2):
 
-        @pytask.mark.task(kwargs={{"content": i}})
+        @pytask.task(kwargs={{"content": i}})
         @pytask.mark.r(
             script="script.r",
             serializer="{serializer}",
             suffix="{suffix}",
         )
-        @pytask.mark.produces(f"{{i}}.rds")
-        def execute_r_script():
+        def execute_r_script(produces=Path(f"{{i}}.rds")):
             pass
     """
     tmp_path.joinpath("task_dummy.py").write_text(textwrap.dedent(source))
@@ -115,21 +115,21 @@ def test_parallel_parametrization_over_source_file_w_loop_and_lambda(
     source = f"""
     import pytask
     import functools
+    from pathlib import Path
 
     for i in range(2):
 
-        pytask.mark.task(
-            kwargs={{"content": i}}
+        pytask.task(
+            kwargs={{"content": i}},
+            produces=Path(f"{{i}}.rds"),
         )(
             pytask.mark.r(
                 script="script.r",
                 serializer="{serializer}",
                 suffix="{suffix}",
             )(
-                pytask.mark.produces(f"{{i}}.rds")(
-                    functools.partial(
-                        lambda x: None, x=1
-                    )
+                functools.partial(
+                    lambda x: None, x=1
                 )
             )
         )
