@@ -38,9 +38,6 @@ pytask_r = "pytask_r.plugin"
 test = ["pytask-parallel", "pytest", "pytest-cov", "pytest-xdist", "pyyaml"]
 typing = ["ty>=0.0.7"]
 
-[tool.rye]
-managed = true
-
 [build-system]
 requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"

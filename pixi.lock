@@ -11278,8 +11278,8 @@ packages:
   requires_python: '>=3.9'
 - pypi: ./
   name: pytask-r
-  version: 0.4.2.dev19+gc22137a40.d20251229
-  sha256: cc8de60d5472855054db51d0ba3ff90b75f882394da574d5a92c1fb9844f34a3
+  version: 0.4.2.dev25+geefe13ff2.d20251229
+  sha256: 28a5ab8cf48be3da5e431301ccf01d258481d4442a4440b8f48ae286bc71ce5a
   requires_dist:
   - click
   - pluggy>=1.0.0
