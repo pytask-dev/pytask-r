@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import textwrap
 
-import pytest
 from pytask import ExitCode
 from pytask import cli
 
@@ -11,7 +10,6 @@ from tests.conftest import parametrize_parse_code_serializer_suffix
 
 
 @needs_rscript
-@pytest.mark.end_to_end
 @parametrize_parse_code_serializer_suffix
 def test_parametrized_execution_of_r_script_w_loop(
     runner, tmp_path, parse_config_code, serializer, suffix
@@ -53,7 +51,6 @@ def test_parametrized_execution_of_r_script_w_loop(
 
 
 @needs_rscript
-@pytest.mark.end_to_end
 @parametrize_parse_code_serializer_suffix
 def test_parametrize_r_options_and_product_paths_w_loop(
     runner, tmp_path, parse_config_code, serializer, suffix
