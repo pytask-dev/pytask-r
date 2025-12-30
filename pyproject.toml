@@ -34,7 +34,7 @@ Tracker = "https://github.com/pytask-dev/pytask-r/issues"
 [project.entry-points.pytask]
 pytask_r = "pytask_r.plugin"
 
-[project.optional-dependencies]
+[dependency-groups]
 test = ["pytask-parallel", "pytest", "pytest-cov", "pytest-xdist", "pyyaml"]
 typing = ["ty>=0.0.7"]
 
@@ -60,7 +60,6 @@ source = "vcs"
 allow-direct-references = true
 
 [tool.ruff]
-target-version = "py310"
 fix = true
 unsafe-fixes = true
 

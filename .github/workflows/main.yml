@@ -27,7 +27,7 @@ jobs:
         with:
           enable-cache: true
       - name: Run type checking
-        run: uv run --extra test --extra typing ty check src/ tests/
+        run: uv run --group test --group typing ty check src/ tests/
 
   run-tests:
 
@@ -53,7 +53,7 @@ jobs:
       # Unit, integration, and end-to-end tests.
 
       - name: Run unit tests and doctests.
-        run: uv run --extra test pytest -m "unit or (not integration and not end_to_end)" --cov src --cov tests --cov-report=xml -n auto
+        run: uv run --group test pytest -m "unit or (not integration and not end_to_end)" --cov src --cov tests --cov-report=xml -n auto
 
       - name: Upload unit test coverage reports to Codecov with GitHub Action
         uses: codecov/codecov-action@v5
@@ -61,7 +61,7 @@ jobs:
           flags: unit
 
       - name: Run end-to-end tests.
-        run: uv run --extra test pytest -m end_to_end --cov src --cov tests --cov-report=xml -n auto
+        run: uv run --group test pytest -m end_to_end --cov src --cov tests --cov-report=xml -n auto
 
       - name: Upload end_to_end test coverage reports to Codecov with GitHub Action
         uses: codecov/codecov-action@v5

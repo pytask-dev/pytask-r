@@ -167,7 +167,7 @@ name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b62f7eb014e352e5d06856655206165d775e675a02c9/exceptiongroup-1.3.1.tar.gz", hash = "sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219", size = 30371, upload-time = "2025-11-21T23:01:54.787Z" }
 wheels = [
@@ -501,7 +501,7 @@ dependencies = [
     { name = "pytask" },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 test = [
     { name = "pytask-parallel" },
     { name = "pytest" },
@@ -518,14 +518,17 @@ requires-dist = [
     { name = "click" },
     { name = "pluggy", specifier = ">=1.0.0" },
     { name = "pytask", specifier = ">=0.4.5" },
-    { name = "pytask-parallel", marker = "extra == 'test'" },
-    { name = "pytest", marker = "extra == 'test'" },
-    { name = "pytest-cov", marker = "extra == 'test'" },
-    { name = "pytest-xdist", marker = "extra == 'test'" },
-    { name = "pyyaml", marker = "extra == 'test'" },
-    { name = "ty", marker = "extra == 'typing'", specifier = ">=0.0.7" },
 ]
-provides-extras = ["test", "typing"]
+
+[package.metadata.requires-dev]
+test = [
+    { name = "pytask-parallel" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "pytest-xdist" },
+    { name = "pyyaml" },
+]
+typing = [{ name = "ty", specifier = ">=0.0.7" }]
 
 [[package]]
 name = "pytest"
