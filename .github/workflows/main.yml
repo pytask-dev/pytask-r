@@ -54,20 +54,8 @@ jobs:
       - name: Install just
         uses: extractions/setup-just@v3
 
-      # Unit, integration, and end-to-end tests.
+      - name: Run tests
+        run: just test-cov
 
-      - name: Run unit tests and doctests.
-        run: just test-unit
-
-      - name: Upload unit test coverage reports to Codecov with GitHub Action
+      - name: Upload test coverage reports to Codecov with GitHub Action
         uses: codecov/codecov-action@v5
-        with:
-          flags: unit
-
-      - name: Run end-to-end tests.
-        run: just test-e2e
-
-      - name: Upload end_to_end test coverage reports to Codecov with GitHub Action
-        uses: codecov/codecov-action@v5
-        with:
-          flags: end_to_end
