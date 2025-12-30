@@ -4,6 +4,7 @@ repos:
     hooks:
     -   id: check-added-large-files
         args: ['--maxkb=25']
+        exclude: ^uv\.lock$
     -   id: check-case-conflict
     -   id: check-merge-conflict
     -   id: check-vcs-permalinks
