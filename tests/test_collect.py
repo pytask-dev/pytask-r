@@ -10,7 +10,6 @@ from pytask_r.collect import r
 from pytask_r.serialization import SERIALIZERS
 
 
-@pytest.mark.unit
 @pytest.mark.parametrize(
     ("args", "kwargs", "expectation", "expected"),
     [
@@ -44,7 +43,6 @@ def test_r(args, kwargs, expectation, expected):
         assert result == expected
 
 
-@pytest.mark.unit
 @pytest.mark.parametrize(
     (
         "mark",

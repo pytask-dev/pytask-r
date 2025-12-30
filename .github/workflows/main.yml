@@ -23,46 +23,39 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      - uses: prefix-dev/setup-pixi@v0.9.2
+      - uses: astral-sh/setup-uv@v7
         with:
-          cache: true
-          environments: typing
-      - run: pixi run typing
+          enable-cache: true
+      - name: Install just
+        uses: extractions/setup-just@v3
+      - name: Run type checking
+        run: just typing
 
   run-tests:
 
-    name: Run tests for ${{ matrix.os }} on ${{ matrix.environment }}
+    name: Run tests for ${{ matrix.os }} on ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
-        environment: ['py310', 'py311', 'py312', 'py313', 'py314']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
 
     steps:
       - uses: actions/checkout@v5
-      - uses: prefix-dev/setup-pixi@v0.9.2
+      - uses: r-lib/actions/setup-r@v2
+      - name: Install R packages
+        run: Rscript -e 'install.packages(c("jsonlite", "yaml"), repos="https://cloud.r-project.org")'
+      - uses: astral-sh/setup-uv@v7
         with:
-          cache: true
-          environments: ${{ matrix.environment }}
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+      - name: Install just
+        uses: extractions/setup-just@v3
 
-      # Unit, integration, and end-to-end tests.
+      - name: Run tests
+        run: just test-cov
 
-      - name: Run unit tests and doctests.
-        shell: bash -l {0}
-        run: pixi run -e ${{ matrix.environment }} test -m "unit or (not integration and not end_to_end)" --cov-report=xml -n auto
-
-      - name: Upload unit test coverage reports to Codecov with GitHub Action
+      - name: Upload test coverage reports to Codecov with GitHub Action
         uses: codecov/codecov-action@v5
-        with:
-          flags: unit
-
-      - name: Run end-to-end tests.
-        shell: bash -l {0}
-        run: pixi run -e ${{ matrix.environment }} test -m end_to_end --cov-report=xml -n auto
-
-      - name: Upload end_to_end test coverage reports to Codecov with GitHub Action
-        uses: codecov/codecov-action@v5
-        with:
-          flags: end_to_end

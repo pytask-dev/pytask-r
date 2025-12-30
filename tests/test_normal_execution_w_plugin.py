@@ -9,7 +9,6 @@ from pytask import ExitCode
 from pytask import cli
 
 
-@pytest.mark.end_to_end
 @pytest.mark.parametrize(
     "dependencies",
     [(), ("in.txt",), ("in_1.txt", "in_2.txt")],

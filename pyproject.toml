@@ -34,7 +34,7 @@ Tracker = "https://github.com/pytask-dev/pytask-r/issues"
 [project.entry-points.pytask]
 pytask_r = "pytask_r.plugin"
 
-[project.optional-dependencies]
+[dependency-groups]
 test = ["pytask-parallel", "pytest", "pytest-cov", "pytest-xdist", "pyyaml"]
 typing = ["ty>=0.0.7"]
 
@@ -60,7 +60,6 @@ source = "vcs"
 allow-direct-references = true
 
 [tool.ruff]
-target-version = "py310"
 fix = true
 unsafe-fixes = true
 
@@ -105,57 +104,5 @@ unused-ignore-comment = "ignore"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [
-    "wip: Tests that are work-in-progress.",
-    "unit: Flag for unit tests which target mainly a single function.",
-    "integration: Flag for integration tests which may comprise of multiple unit tests.",
-    "end_to_end: Flag for tests that cover the whole program.",
 ]
 norecursedirs = [".idea", ".tox"]
-
-[tool.pixi.workspace]
-channels = ["conda-forge"]
-platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
-
-[tool.pixi.target.osx-64.dependencies]
-libgfortran5 = ">=14.2.0"
-
-[tool.pixi.target.osx-arm64.dependencies]
-libgfortran5 = ">=14.2.0"
-
-[tool.pixi.pypi-dependencies]
-pytask_r = { path = ".", editable = true }
-
-[tool.pixi.environments]
-default = { solve-group = "default" }
-test = { features = ["test"], solve-group = "default" }
-typing = { features = ["test", "typing"], solve-group = "default" }
-py310 = { features = ["py310", "test"]}
-py311 = { features = ["py311", "test"]}
-py312 = { features = ["py312", "test"]}
-py313 = { features = ["py313", "test"]}
-py314 = { features = ["py314", "test"]}
-
-[tool.pixi.feature.py310.dependencies]
-python = "3.10.*"
-[tool.pixi.feature.py311.dependencies]
-python = "3.11.*"
-[tool.pixi.feature.py312.dependencies]
-python = "3.12.*"
-[tool.pixi.feature.py313.dependencies]
-python = "3.13.*"
-[tool.pixi.feature.py314.dependencies]
-python = "3.14.*"
-
-[tool.pixi.feature.test.dependencies]
-r-base = ">=4.0.0"
-r-jsonlite = "*"
-r-yaml = "*"
-
-[tool.pixi.feature.test.tasks]
-test = "pytest --cov src --cov tests"
-
-[tool.pixi.feature.typing.dependencies]
-ty = ">=0.0.7"
-
-[tool.pixi.feature.typing.tasks]
-typing = "ty check src/ tests/"

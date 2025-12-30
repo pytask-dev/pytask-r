@@ -25,7 +25,6 @@ pytestmark = pytest.mark.skipif(
 
 
 @needs_rscript
-@pytest.mark.end_to_end
 @parametrize_parse_code_serializer_suffix
 def test_parallel_parametrization_over_source_files_w_loop(
     runner, tmp_path, parse_config_code, serializer, suffix
@@ -69,7 +68,6 @@ def test_parallel_parametrization_over_source_files_w_loop(
 
 
 @needs_rscript
-@pytest.mark.end_to_end
 @parametrize_parse_code_serializer_suffix
 def test_parallel_parametrization_over_source_file_w_loop(
     runner, tmp_path, parse_config_code, serializer, suffix
@@ -106,7 +104,6 @@ def test_parallel_parametrization_over_source_file_w_loop(
 
 
 @needs_rscript
-@pytest.mark.end_to_end
 @parametrize_parse_code_serializer_suffix
 @pytest.mark.xfail(reason="@task does not support partialed functions.")
 def test_parallel_parametrization_over_source_file_w_loop_and_lambda(
