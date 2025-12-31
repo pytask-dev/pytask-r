@@ -36,7 +36,7 @@ pytask_r = "pytask_r.plugin"
 
 [dependency-groups]
 test = ["pytask-parallel", "pytest", "pytest-cov", "pytest-xdist", "pyyaml"]
-typing = ["ty>=0.0.7"]
+typing = ["ty>=0.0.8"]
 
 [build-system]
 requires = ["hatchling", "hatch-vcs"]
