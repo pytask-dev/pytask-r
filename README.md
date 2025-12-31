@@ -20,11 +20,11 @@ pytask-r is available on [PyPI](https://pypi.org/project/pytask-r) and
 [Anaconda.org](https://anaconda.org/conda-forge/pytask-r). Install it with
 
 ```console
-$ pip install pytask-r
+$ uv add pytask-r
 
 # or
 
-$ conda install -c conda-forge pytask-r
+$ pixi add pytask-r
 ```
 
 You also need to have R installed and `Rscript` on your command line. Test it by typing
@@ -34,13 +34,15 @@ the following on the command line
 Rscript --help
 ```
 
-If an error is shown instead of a help page, you can install R with `conda`.
+If an error is shown instead of a help page, you can install R with `pixi`.
 
 ```console
-conda install -c conda-forge r-base
+pixi add r-base
 ```
 
 Or install install R from the official [R Project](https://www.r-project.org/).
+
+For serializing task data, install either `r-jsonlite` for JSON or `r-yaml` for YAML.
 
 ## Usage
 
@@ -246,3 +248,12 @@ r_options = ["--vanilla"]
 ## Changes
 
 Consult the [release notes](CHANGES.md) to find out about what is new.
+
+## Developer
+
+To run the tests, `r-base` and its dependencies need to be installed. The recommended
+command is
+
+```console
+pixi global install r-base --with r-jsonlite --with r-yaml
+```
