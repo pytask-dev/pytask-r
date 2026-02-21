@@ -40,7 +40,7 @@ repos:
         ]
         args: [--wrap, "88"]
 -   repo: https://github.com/crate-ci/typos
-    rev: v1
+    rev: v1.43.5
     hooks:
     -   id: typos
 -   repo: meta

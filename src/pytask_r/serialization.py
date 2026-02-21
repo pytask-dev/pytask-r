@@ -58,7 +58,7 @@ def serialize_keyword_arguments(
         serializer_func = serializer
     else:
         msg = f"Serializer {serializer!r} is not known."
-        raise ValueError(msg)
+        raise TypeError(msg)
 
     serialized = serializer_func(kwargs)
     path_to_serialized.write_text(serialized)
