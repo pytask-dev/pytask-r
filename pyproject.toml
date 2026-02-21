@@ -65,8 +65,6 @@ unsafe-fixes = true
 
 [tool.ruff.lint]
 extend-ignore = [
-    "ANN101", # type annotating self
-    "ANN102", # type annotating cls
     "ANN401",
     "COM812", # Comply with ruff-format
     "ISC001", # Comply with ruff-format
