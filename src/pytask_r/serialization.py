@@ -47,12 +47,15 @@ def serialize_keyword_arguments(
     kwargs: dict[str, Any],
 ) -> None:
     """Serialize keyword arguments."""
-    if callable(serializer):
-        serializer_func = serializer
-    elif isinstance(serializer, str) and serializer in SERIALIZERS:
+    if isinstance(serializer, str):
+        if serializer not in SERIALIZERS:
+            msg = f"Serializer {serializer!r} is not known."
+            raise ValueError(msg)
         serializer_func = cast(
             "Callable[..., str]", SERIALIZERS[serializer]["serializer"]
         )
+    elif callable(serializer):
+        serializer_func = serializer
     else:
         msg = f"Serializer {serializer!r} is not known."
         raise ValueError(msg)
