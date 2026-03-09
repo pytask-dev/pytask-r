@@ -4,23 +4,33 @@ from __future__ import annotations
 
 import json
 import uuid
+from collections.abc import Callable
 from pathlib import Path
-from typing import TYPE_CHECKING
 from typing import Any
+from typing import TypedDict
 from typing import cast
 
 from pytask import PTask
 from pytask import PTaskWithPath
-
-if TYPE_CHECKING:
-    from collections.abc import Callable
 
 __all__ = ["SERIALIZERS", "create_path_to_serialized", "serialize_keyword_arguments"]
 
 _HIDDEN_FOLDER = ".pytask/pytask-r"
 
 
-SERIALIZERS = {"json": {"serializer": json.dumps, "suffix": ".json"}}
+SerializerFunc = Callable[..., str]
+
+
+class SerializerEntry(TypedDict):
+    """Describe a serializer function and its output suffix."""
+
+    serializer: SerializerFunc
+    suffix: str
+
+
+SERIALIZERS: dict[str, SerializerEntry] = {
+    "json": {"serializer": json.dumps, "suffix": ".json"}
+}
 
 
 try:
@@ -28,8 +38,9 @@ try:
 except ImportError:  # pragma: no cover
     pass
 else:
-    SERIALIZERS["yaml"] = {"serializer": yaml.dump, "suffix": ".yaml"}
-    SERIALIZERS["yml"] = {"serializer": yaml.dump, "suffix": ".yml"}
+    yaml_dump = cast("SerializerFunc", yaml.dump)
+    SERIALIZERS["yaml"] = {"serializer": yaml_dump, "suffix": ".yaml"}
+    SERIALIZERS["yml"] = {"serializer": yaml_dump, "suffix": ".yml"}
 
 
 def create_path_to_serialized(task: PTask, suffix: str) -> Path:
@@ -42,7 +53,7 @@ def create_path_to_serialized(task: PTask, suffix: str) -> Path:
 
 
 def serialize_keyword_arguments(
-    serializer: str | Callable[..., str],
+    serializer: str | SerializerFunc,
     path_to_serialized: Path,
     kwargs: dict[str, Any],
 ) -> None:
@@ -51,9 +62,7 @@ def serialize_keyword_arguments(
         if serializer not in SERIALIZERS:
             msg = f"Serializer {serializer!r} is not known."
             raise ValueError(msg)
-        serializer_func = cast(
-            "Callable[..., str]", SERIALIZERS[serializer]["serializer"]
-        )
+        serializer_func = SERIALIZERS[serializer]["serializer"]
     elif callable(serializer):
         serializer_func = serializer
     else:
