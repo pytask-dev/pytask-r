@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import shutil
+from pathlib import Path
 from typing import Any
 
 from pytask import PPathNode
@@ -32,11 +33,24 @@ def pytask_execute_task_setup(task: PTask) -> None:
             raise ValueError(msg)
 
         _, _, serializer, _ = r(**marks[0].kwargs)
+        if serializer is None:  # pragma: no cover
+            msg = "Missing serializer for R task."
+            raise ValueError(msg)
 
-        serialized_node: PythonNode = task.depends_on["_serialized"]  # type: ignore[assignment]
-        serialized_node.value.parent.mkdir(parents=True, exist_ok=True)  # type: ignore[union-attr]
+        serialized_node = task.depends_on["_serialized"]
+        if not isinstance(serialized_node, PythonNode) or not isinstance(
+            serialized_node.value, Path
+        ):
+            msg = (
+                "Expected '_serialized' dependency to be a PythonNode "
+                "containing a Path."
+            )
+            raise TypeError(msg)
+
+        path_to_serialized = serialized_node.value
+        path_to_serialized.parent.mkdir(parents=True, exist_ok=True)
         kwargs = collect_keyword_arguments(task)
-        serialize_keyword_arguments(serializer, serialized_node.value, kwargs)  # type: ignore[arg-type]
+        serialize_keyword_arguments(serializer, path_to_serialized, kwargs)
 
 
 def collect_keyword_arguments(task: PTask) -> dict[str, Any]:
