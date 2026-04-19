@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import shutil
+from typing import TYPE_CHECKING
 from typing import Any
+from typing import cast
 
 from pytask import PPathNode
 from pytask import PTask
@@ -14,6 +16,9 @@ from pytask.tree_util import tree_map
 
 from pytask_r.serialization import serialize_keyword_arguments
 from pytask_r.shared import r
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 @hookimpl
@@ -32,11 +37,15 @@ def pytask_execute_task_setup(task: PTask) -> None:
             raise ValueError(msg)
 
         _, _, serializer, _ = r(**marks[0].kwargs)
+        if serializer is None:  # pragma: no cover
+            msg = "Missing serializer for R task."
+            raise ValueError(msg)
 
-        serialized_node: PythonNode = task.depends_on["_serialized"]  # type: ignore[assignment]
-        serialized_node.value.parent.mkdir(parents=True, exist_ok=True)  # type: ignore[union-attr]
+        serialized_node = cast("PythonNode", task.depends_on["_serialized"])
+        path_to_serialized = cast("Path", serialized_node.value)
+        path_to_serialized.parent.mkdir(parents=True, exist_ok=True)
         kwargs = collect_keyword_arguments(task)
-        serialize_keyword_arguments(serializer, serialized_node.value, kwargs)  # type: ignore[arg-type]
+        serialize_keyword_arguments(serializer, path_to_serialized, kwargs)
 
 
 def collect_keyword_arguments(task: PTask) -> dict[str, Any]:

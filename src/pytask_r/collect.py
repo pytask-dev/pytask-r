@@ -150,7 +150,10 @@ def pytask_collect_task(
             )
 
         # Add serialized node that depends on the task id.
-        serialized = create_path_to_serialized(task, suffix)  # type: ignore[arg-type]
+        if suffix is None:  # pragma: no cover
+            msg = "Missing suffix for serialized R task."
+            raise ValueError(msg)
+        serialized = create_path_to_serialized(task, suffix)
         serialized_node = session.hook.pytask_collect_node(
             session=session,
             path=path_nodes,
