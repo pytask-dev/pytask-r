@@ -59,11 +59,11 @@ def collect_keyword_arguments(task: PTask) -> dict[str, Any]:
     kwargs: dict[str, Any] = {
         **tree_map(
             lambda x: str(x.path) if isinstance(x, PPathNode) else x.value,
-            task.depends_on,
+            task.depends_on,  # ty: ignore[invalid-argument-type]
         ),
         **tree_map(
             lambda x: str(x.path) if isinstance(x, PPathNode) else x.value,
-            task.produces,
+            task.produces,  # ty: ignore[invalid-argument-type]
         ),
     }
     kwargs.pop("_script")
