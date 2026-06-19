@@ -1,5 +1,5 @@
 [project]
-name = "pytask_r"
+name = "pytask-r"
 description = "Run R scripts with pytask."
 classifiers = [
     "Development Status :: 4 - Beta",
