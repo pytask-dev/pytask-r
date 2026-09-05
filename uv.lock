@@ -505,7 +505,7 @@ wheels = [
 
 [[package]]
 name = "pytask-parallel"
-version = "0.5.4"
+version = "0.5.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs" },
@@ -516,9 +516,9 @@ dependencies = [
     { name = "pytask" },
     { name = "rich" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/dc/e8/ec67465ac3237508ce8f2b4e765fdfb0ae3d7c41d3acfe6fc46d8fe50804/pytask_parallel-0.5.4.tar.gz", hash = "sha256:75c96cc57ebfa68b63b33b7e8691f3ad2c8911236a9b600c33dbe896fe28d321", size = 14354, upload-time = "2026-05-01T17:22:19.491Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c8/97/1d2e75e90a72bb4effcb7663d34db738318b7c3cfc9f1289f949eca71216/pytask_parallel-0.5.5.tar.gz", hash = "sha256:50af5e3733d60ae41a38c2294e52572c19154a10e97b8858f107e3a4afd07a47", size = 14536, upload-time = "2026-08-23T13:36:29.363Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5b/f2/44a7dd795a52d34d033b1cb1a6b1162eada650079e557e236fb6b88943be/pytask_parallel-0.5.4-py3-none-any.whl", hash = "sha256:f05ca8e3251e25621b260659e01bceec43875155afa3dab84a912e1bbd9971d0", size = 19110, upload-time = "2026-05-01T17:22:18.339Z" },
+    { url = "https://files.pythonhosted.org/packages/80/e5/7e37396b6da575d4085bd7f8afadc9803f4fda4b07a1d3e30fe6d8b00467/pytask_parallel-0.5.5-py3-none-any.whl", hash = "sha256:88ec676b085cc945a58675f5e6372344d010763b2d21e8820c7daf6c9845c408", size = 19272, upload-time = "2026-08-23T13:36:28.327Z" },
 ]
 
 [[package]]
