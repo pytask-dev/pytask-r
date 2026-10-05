@@ -21,14 +21,18 @@ parametrize_parse_code_serializer_suffix = pytest.mark.parametrize(
     ("parse_config_code", "serializer", "suffix"),
     [
         (
-            "library(jsonlite); args <- commandArgs(trailingOnly=TRUE); "
-            "config <- read_json(args[length(args)])",
+            (
+                "library(jsonlite); args <- commandArgs(trailingOnly=TRUE); "
+                "config <- read_json(args[length(args)])"
+            ),
             "json",
             ".json",
         ),
         (
-            "library(yaml); args <- commandArgs(trailingOnly=TRUE); "
-            "config <- read_yaml(args[length(args)])",
+            (
+                "library(yaml); args <- commandArgs(trailingOnly=TRUE); "
+                "config <- read_yaml(args[length(args)])"
+            ),
             "yaml",
             ".yaml",
         ),
