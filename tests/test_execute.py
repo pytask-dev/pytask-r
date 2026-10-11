@@ -37,7 +37,7 @@ def test_pytask_execute_task_setup(monkeypatch):
     "depends_on",
     ['Path("in_1.txt")', '[Path("in_1.txt"), Path("in_2.txt")]'],
 )
-def test_run_r_script(  # noqa: PLR0913
+def test_run_r_script(  # noqa: PLR0913, PLR0917
     runner, tmp_path, parse_config_code, serializer, suffix, depends_on
 ):
     task_source = f"""
