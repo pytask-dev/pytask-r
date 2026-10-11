@@ -7,7 +7,7 @@ releases are available on [PyPI](https://pypi.org/project/pytask-r) and
 
 ## Unreleased
 
-- Raise the minimum supported Python version to 3.11.
+- {pull}`164` raises the minimum supported Python version to 3.11.
 
 ## 0.4.2 - 2024-xx-xx
 
