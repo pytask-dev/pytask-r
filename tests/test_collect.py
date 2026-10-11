@@ -96,7 +96,7 @@ def test_r(args, kwargs, expectation, expected):
         ),
     ],
 )
-def test_parse_r_mark(  # noqa: PLR0913
+def test_parse_r_mark(  # noqa: PLR0913, PLR0917
     mark,
     default_options,
     default_serializer,

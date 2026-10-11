@@ -65,6 +65,7 @@ unsafe-fixes = true
 
 [tool.ruff.lint]
 extend-ignore = [
+    "CPY001", # Copyright headers are not required.
     "ANN401",
     "COM812", # Comply with ruff-format
     "ISC001", # Comply with ruff-format
